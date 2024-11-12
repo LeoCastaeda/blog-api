@@ -34,6 +34,7 @@ model Post {
   updatedAt DateTime @updatedAt
   authorId  Int
   author    User     @relation(fields: [authorId], references: [id])
+  deleted   Boolean  @default(false)
   likes     Like[]
 }
 

@@ -3,6 +3,7 @@ import { User } from '../../domain/entities/User';
 import { Role } from '../../domain/entities/Role';
 import prisma from '../database/prismaClient';
 
+// Mapea el rol de Prisma al rol de la aplicación
 function mapPrismaRoleToRole(prismaRole: string): Role {
   switch (prismaRole) {
     case 'admin':
@@ -13,16 +14,17 @@ function mapPrismaRoleToRole(prismaRole: string): Role {
       throw new Error(`Unknown role: ${prismaRole}`);
   }
 }
-function mapRoleToPrismaRole(role: Role): string {
-  return role as string;  
-}
- 
 
+// Mapea el rol de la aplicación al rol de Prisma
+function mapRoleToPrismaRole(role: Role): Role {
+  return role;  
+}
 
 export class UserRepository implements IUserRepository {
   findAll(): User[] | PromiseLike<User[]> {
     throw new Error('Method not implemented.');
   }
+
   async findById(id: number): Promise<User | null> {
     const user = await prisma.user.findUnique({ where: { id } });
     return user ? User.with({
@@ -30,7 +32,7 @@ export class UserRepository implements IUserRepository {
       username: user.username,
       email: user.email,
       password: user.password,
-      role: mapPrismaRoleToRole(user.role), // Cambiado aquí
+      role: mapPrismaRoleToRole(user.role),
       banned: user.banned,
       createdAt: user.createdAt,
       updatedAt: user.updatedAt,
@@ -44,7 +46,7 @@ export class UserRepository implements IUserRepository {
       username: user.username,
       email: user.email,
       password: user.password,
-      role: mapPrismaRoleToRole(user.role), // Cambiado aquí
+      role: mapPrismaRoleToRole(user.role),
       banned: user.banned,
       createdAt: user.createdAt,
       updatedAt: user.updatedAt,
@@ -57,7 +59,7 @@ export class UserRepository implements IUserRepository {
         username: user.username,
         email: user.email,
         password: user.password,
-        role: mapRoleToPrismaRole(user.role), // Cambiado aquí
+        role: mapRoleToPrismaRole(user.role), 
         banned: user.banned,
         createdAt: user.createdAt,
         updatedAt: user.updatedAt,
@@ -68,7 +70,7 @@ export class UserRepository implements IUserRepository {
       username: createdUser.username,
       email: createdUser.email,
       password: createdUser.password,
-      role: mapPrismaRoleToRole(createdUser.role), // Cambiado aquí
+      role: mapPrismaRoleToRole(createdUser.role),
       banned: createdUser.banned,
       createdAt: createdUser.createdAt,
       updatedAt: createdUser.updatedAt,
@@ -82,7 +84,7 @@ export class UserRepository implements IUserRepository {
         username: user.username,
         email: user.email,
         password: user.password,
-        role: mapRoleToPrismaRole(user.role), // Cambiado aquí
+        role: mapRoleToPrismaRole(user.role), 
         banned: user.banned,
         updatedAt: user.updatedAt,
       }
@@ -92,7 +94,7 @@ export class UserRepository implements IUserRepository {
   async update(user: User, newData: Partial<User>): Promise<void> {
     const updateData = { ...newData };
     if (newData.role) {
-      updateData.role = mapRoleToPrismaRole(newData.role);
+      updateData.role = mapRoleToPrismaRole(newData.role); // Tipo Role ahora
     }
     await prisma.user.update({
       where: { id: user.id },
