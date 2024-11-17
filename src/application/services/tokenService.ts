@@ -1,8 +1,9 @@
+import { ITokenService } from "./ITokenService";
 import jwt, { JwtPayload } from 'jsonwebtoken';
 
 const secret = process.env.JWT_SECRET || 'defaultSecret';
 
-class TokenService {
+class TokenService implements ITokenService {
   generateToken(payload: object): string {
     return jwt.sign(payload, secret, { expiresIn: '1h' });
   }
@@ -19,4 +20,3 @@ class TokenService {
 }
 
 export default new TokenService();
-

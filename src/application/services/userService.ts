@@ -4,6 +4,12 @@ import { User, Role, UserProps } from '../../domain/entities/User';
 import tokenService from './tokenService';
 
 export class UserService {
+  deleteUser(arg0: number) {
+    throw new Error('Method not implemented.');
+  }
+  findById(arg0: number) {
+    throw new Error('Method not implemented.');
+  }
   updateUserProfile(username: string, email: string, password: string, role: Role) {
       throw new Error('Method not implemented.');
   }
@@ -15,7 +21,7 @@ export class UserService {
 
   async createUser(username: string, email: string, password: string, role: Role) {
     const hashedPassword = await bcrypt.hash(password, 10);
-    const user = User.create(username, email, hashedPassword, role);
+    const user = User.create(username, email, hashedPassword, role); // Elimina el argumento extra
     const createdUser = await this.userRepository.create(user);
     const token = tokenService.generateToken({ id: createdUser.id, role: createdUser.role });
     return { user: createdUser, token };
@@ -68,7 +74,6 @@ export class UserService {
 
     user.updateUpdatedAt(new Date());
 
-    // Now call the update method with both the user and the newData
     return this.userRepository.update(user, newData);
   }
 

@@ -31,8 +31,9 @@ export class PostService {
     await this.postRepository.update(post);
   }
 
-  async deletePost(id: number): Promise<void> {
-    await this.postRepository.delete(id);
+  async deletePost(id: number): Promise<boolean> {
+     const result = await this.postRepository.delete(id);
+     return result !== null;
   }
 }
 

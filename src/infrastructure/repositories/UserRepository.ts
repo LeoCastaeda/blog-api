@@ -53,13 +53,27 @@ export class UserRepository implements IUserRepository {
     }) : null;
   }
 
+  async findByUsername(username: string): Promise<User | null> {
+    const user = await prisma.user.findUnique({ where: { username } });
+    return user ? User.with({
+      id: user.id,
+      username: user.username,
+      email: user.email,
+      password: user.password,
+      role: mapPrismaRoleToRole(user.role),
+      banned: user.banned,
+      createdAt: user.createdAt,
+      updatedAt: user.updatedAt,
+    }) : null;
+  }
+
   async create(user: User): Promise<User> {
     const createdUser = await prisma.user.create({
       data: {
         username: user.username,
         email: user.email,
         password: user.password,
-        role: mapRoleToPrismaRole(user.role), 
+        role: mapRoleToPrismaRole(user.role),
         banned: user.banned,
         createdAt: user.createdAt,
         updatedAt: user.updatedAt,
@@ -84,7 +98,7 @@ export class UserRepository implements IUserRepository {
         username: user.username,
         email: user.email,
         password: user.password,
-        role: mapRoleToPrismaRole(user.role), 
+        role: mapRoleToPrismaRole(user.role),
         banned: user.banned,
         updatedAt: user.updatedAt,
       }

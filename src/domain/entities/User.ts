@@ -70,21 +70,34 @@ export class User {
     return this.props.updatedAt;
   }
 
+  public update(arg0: { username: string; email: string; password: string; role: Role; banned: boolean; }) {
+    if (!arg0.username) throw new Error("Username is required");
+    if (!arg0.email) throw new Error("Email is required");
+    if (!arg0.password) throw new Error("Password is required");
+    if (!Object.values(Role).includes(arg0.role)) throw new Error("Invalid role");
+
+    this.props.username = arg0.username;
+    this.props.email = arg0.email;
+    this.props.password = arg0.password; // Password should be hashed in the application layer
+    this.props.role = arg0.role;
+    this.props.banned = arg0.banned;
+    this.updateUpdatedAt(new Date());
+  }
+
   public updateEmail(newEmail: string) {
     if (!newEmail) throw new Error("Email is required");
     this.props.email = newEmail;
     this.props.updatedAt = new Date();
-    // Trigger domain event
     DomainEvents.dispatch(new UserEmailUpdated(this.props.id, newEmail));
   }
 
   public updatePassword(newPassword: string) {
     if (!newPassword) throw new Error("Password is required");
-    this.props.password = newPassword;
+    this.props.password = newPassword; // Password should be hashed in the application layer
     this.props.updatedAt = new Date();
-    // Trigger domain event
     DomainEvents.dispatch(new UserPasswordUpdated(this.props.id, newPassword));
   }
+
   public updateUsername(username: string) {
     if (!username) throw new Error("Username is required");
     this.props.username = username;
@@ -101,18 +114,15 @@ export class User {
     this.props.updatedAt = date;
   }
 
-
   public banUser() {
     this.props.banned = true;
     this.props.updatedAt = new Date();
-    // Trigger domain event
     DomainEvents.dispatch(new UserBanned(this.props.id));
   }
 
   public unbanUser() {
     this.props.banned = false;
     this.props.updatedAt = new Date();
-    // Trigger domain event
     DomainEvents.dispatch(new UserUnbanned(this.props.id));
   }
 }

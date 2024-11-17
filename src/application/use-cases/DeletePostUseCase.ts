@@ -4,6 +4,6 @@ export class DeletePost {
   constructor(private postService: PostService) {}
 
   async execute(postId: number): Promise<void> {
-    return this.postService.deletePost(postId);
+    await this.postService.deletePost(postId);
   }
 }
