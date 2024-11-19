@@ -3,28 +3,46 @@ import { Like } from '../../domain/entities/Like';
 import prisma from '../database/prismaClient';
 
 export class LikeRepository implements ILikeRepository {
-  findById(id: number): Promise<Like | null> {
-      throw new Error('Method not implemented.');
+  softDelete: any;
+  async findById(id: number): Promise<Like | null> {
+    const like = await prisma.like.findUnique({
+      where: { id },
+    });
+    return like ? Like.with(like) : null;
   }
-  findByUserId(userId: number): Promise<Like[]> {
-      throw new Error('Method not implemented.');
+
+  async findByUserId(userId: number): Promise<Like[]> {
+    const likes = await prisma.like.findMany({
+      where: { userId, deleted: false },  // Filtrar los likes eliminados
+    });
+    return likes.map(like => Like.with(like));
   }
-  findByPostId(postId: number): Promise<Like[]> {
-      throw new Error('Method not implemented.');
+
+  async findByPostId(postId: number): Promise<Like[]> {
+    const likes = await prisma.like.findMany({
+      where: { postId, deleted: false },  // Filtrar los likes eliminados
+    });
+    return likes.map(like => Like.with(like));
   }
-  countByPostId(postId: number): Promise<number> {
-      throw new Error('Method not implemented.');
+
+  async countByPostId(postId: number): Promise<number> {
+    return await prisma.like.count({
+      where: { postId, deleted: false },  // Filtrar los likes eliminados
+    });
   }
-  countByUserId(userId: number): Promise<number> {
-      throw new Error('Method not implemented.');
+
+  async countByUserId(userId: number): Promise<number> {
+    return await prisma.like.count({
+      where: { userId, deleted: false },  // Filtrar los likes eliminados
+    });
   }
+
   async save(like: Like): Promise<Like> {
-    const createdLike = await prisma.like.create({ 
+    const createdLike = await prisma.like.create({
       data: {
         userId: like.userId,
         postId: like.postId,
-        createdAt: like.createdAt,
-      }
+      },
     });
     return Like.with({
       id: createdLike.id,
@@ -35,6 +53,9 @@ export class LikeRepository implements ILikeRepository {
   }
 
   async delete(id: number): Promise<void> {
-    await prisma.like.delete({ where: { id } });
+    await prisma.like.update({
+      where: { id },
+      data: { deleted: true },  // Soft delete
+    });
   }
 }

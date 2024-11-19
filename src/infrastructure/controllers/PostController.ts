@@ -4,7 +4,7 @@ import { PostService } from "../../application/services/postService";
 export class PostController {
   constructor(private postService: PostService) {}
 
-  async createPost(req: Request, res: Response) {
+  async createPost(req: Request, res: Response): Promise<void> {
     try {
       const { title, content, authorId } = req.body;
       const post = await this.postService.createPost(title, content, authorId);
@@ -18,7 +18,7 @@ export class PostController {
     }
   }
 
-  async getPostById(req: Request, res: Response) {
+  async getPostById(req: Request, res: Response): Promise<void> {
     try {
       const { id } = req.params;
       const post = await this.postService.getPostById(Number(id));
@@ -36,7 +36,7 @@ export class PostController {
     }
   }
 
-  async deletePost(req: Request, res: Response) {
+  async deletePost(req: Request, res: Response): Promise<void> {
     try {
       const { id } = req.params;
       const deletedPost = await this.postService.deletePost(Number(id));
@@ -54,7 +54,7 @@ export class PostController {
     }
   }
 
-  async getAllPosts(req: Request, res: Response) {
+  async getAllPosts(req: Request, res: Response): Promise<void> {
     try {
       const posts = await this.postService.getAllPosts();
       res.status(200).json(posts);

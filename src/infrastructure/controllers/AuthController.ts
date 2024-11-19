@@ -4,15 +4,18 @@ import { AuthService } from "../../application/services/AuthService";
 
 export class AuthController implements IAuthController {
   constructor(private authService: AuthService) {}
-    login(req: Request, res: Response): Promise<void> {
-        throw new Error("Method not implemented.");
-    }
-    register(req: Request, res: Response): Promise<void> {
-        throw new Error("Method not implemented.");
-    }
-    logout(req: Request, res: Response): Promise<void> {
-        throw new Error("Method not implemented.");
-    }
+
+  async login(req: Request, res: Response): Promise<void> {
+    await this.iniciarSesion(req, res);
+  }
+
+  async register(req: Request, res: Response): Promise<void> {
+    await this.registrar(req, res);
+  }
+
+  async logout(req: Request, res: Response): Promise<void> {
+    await this.cerrarSesion(req, res);
+  }
 
   async refreshToken(req: Request, res: Response): Promise<void> {
     try {

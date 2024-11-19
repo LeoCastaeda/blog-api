@@ -12,34 +12,37 @@ export class PostRepository implements IPostRepository {
             authorId: post.authorId,
             createdAt: post.createdAt,
             updatedAt: post.updatedAt,
-            deleted: false
-        }): null;
+            deleted: post.deleted ?? false, // Si `deleted` no es nulo/indefinido
+        }) : null;
     }
 
     async findAll(): Promise<Post[]> {
-        const posts = await prisma.post.findMany();
-        return posts.map((post) => Post.with({
-            id: post.id,
-            title: post.title,
-            content: post.content,
-            authorId: post.authorId,                            
-            createdAt: post.createdAt,
-            updatedAt: post.updatedAt,
-            deleted: post.deleted,
-        }));
-    }
-
-    async save(post: Post): Promise<void> {
-        await prisma.post.create({
-            data: {
+        const posts = await prisma.post.findMany({
+            where: { deleted: false }, // Solo publicaciones no eliminadas
+        });
+        return posts.map((post) =>
+            Post.with({
                 id: post.id,
                 title: post.title,
                 content: post.content,
                 authorId: post.authorId,
                 createdAt: post.createdAt,
                 updatedAt: post.updatedAt,
+                deleted: post.deleted,
+            })
+        );
+    }
+
+    async save(post: Post): Promise<void> {
+        await prisma.post.create({
+            data: {
+                title: post.title,
+                content: post.content,
+                authorId: post.authorId,
+                createdAt: post.createdAt ?? new Date(),
+                updatedAt: post.updatedAt ?? new Date(),
             },
-        }); 
+        });
     }
 
     async update(post: Post): Promise<void> {
@@ -48,12 +51,16 @@ export class PostRepository implements IPostRepository {
             data: {
                 title: post.title,
                 content: post.content,
-                updatedAt: post.updatedAt,
+                updatedAt: new Date(), // Actualizar la fecha de modificación
             },
         });
     }
 
     async delete(id: number): Promise<void> {
-        await prisma.post.delete({ where: { id } });
+        // Implementación de soft delete
+        await prisma.post.update({
+            where: { id },
+            data: { deleted: true },
+        });
     }
 }

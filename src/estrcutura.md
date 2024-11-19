@@ -1,9 +1,28 @@
 /src
+ /domain
   /entities
     User.ts
     Post.ts
-  /usecases
+    Like.ts
+    Rol.ts
+  /events
+    DomainEvents.ts
+    userEvents.ts
+  /repositories
+    ILikeRepository.ts
+    IPostRepository.ts
+    IUserRepository.ts
+ /application
+   /services
+    AuthService.ts
+    ItokenService.ts
+    likeService.ts
+    postService.ts
+    tokenService.ts
+    userService.ts
+   /use-cases
     CreateUserUseCase.ts
+    CountLikesUseCase.ts
     LoginUserUseCase.ts
     CreatePostUseCase.ts
     EditPostUseCase.ts
@@ -14,22 +33,25 @@
     GetAllUsersUseCase.ts
     BanUserUseCase.ts
     UpdateUserProfileUseCase.ts
-  /interfaces
-    IUserRepository.ts
-    IPostRepository.ts
+ /infrastructure
+   /controllers
     UserController.ts
     PostController.ts
     AuthController.ts
-  /infrastructure
-    /database
-      prismaClient.ts
+    IAuthController.ts
+    LikeController.ts
+   /database
+    prismaClient.ts
+   /middlewares
+    errorHandler.ts
+   /repositories
+    LikeRepository.ts
     UserRepository.ts
     PostRepository.ts
-  /presentation
-    /routes
-      userRoutes.ts
-      postRoutes.ts
-      authRoutes.ts
+ /routes
+    userRoutes.ts
+    postRoutes.ts
+    authRoutes.ts
   /app.ts
   /server.ts
 

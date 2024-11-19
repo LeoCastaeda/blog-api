@@ -17,11 +17,8 @@ export class User {
   private constructor(private props: UserProps) { }
 
   public static create(username: string, email: string, password: string, role: Role): User {
-    if (!username) throw new Error("Username is required");
-    if (!email) throw new Error("Email is required");
-    if (!password) throw new Error("Password is required");
-    if (!Object.values(Role).includes(role)) throw new Error("Invalid role");
-
+    this.validateUserProps({ username, email, password, role });
+    
     return new User({
       id: 0,
       username,
@@ -36,6 +33,13 @@ export class User {
 
   public static with(props: UserProps): User {
     return new User(props);
+  }
+
+  private static validateUserProps(arg0: { username: string; email: string; password: string; role: Role }) {
+    if (!arg0.username) throw new Error("Username is required");
+    if (!arg0.email) throw new Error("Email is required");
+    if (!arg0.password) throw new Error("Password is required");
+    if (!Object.values(Role).includes(arg0.role)) throw new Error("Invalid role");
   }
 
   public get id() {
@@ -71,10 +75,7 @@ export class User {
   }
 
   public update(arg0: { username: string; email: string; password: string; role: Role; banned: boolean; }) {
-    if (!arg0.username) throw new Error("Username is required");
-    if (!arg0.email) throw new Error("Email is required");
-    if (!arg0.password) throw new Error("Password is required");
-    if (!Object.values(Role).includes(arg0.role)) throw new Error("Invalid role");
+    User.validateUserProps(arg0);
 
     this.props.username = arg0.username;
     this.props.email = arg0.email;
@@ -87,14 +88,14 @@ export class User {
   public updateEmail(newEmail: string) {
     if (!newEmail) throw new Error("Email is required");
     this.props.email = newEmail;
-    this.props.updatedAt = new Date();
+    this.updateUpdatedAt(new Date());
     DomainEvents.dispatch(new UserEmailUpdated(this.props.id, newEmail));
   }
 
   public updatePassword(newPassword: string) {
     if (!newPassword) throw new Error("Password is required");
     this.props.password = newPassword; // Password should be hashed in the application layer
-    this.props.updatedAt = new Date();
+    this.updateUpdatedAt(new Date());
     DomainEvents.dispatch(new UserPasswordUpdated(this.props.id, newPassword));
   }
 
@@ -116,13 +117,13 @@ export class User {
 
   public banUser() {
     this.props.banned = true;
-    this.props.updatedAt = new Date();
+    this.updateUpdatedAt(new Date());
     DomainEvents.dispatch(new UserBanned(this.props.id));
   }
 
   public unbanUser() {
     this.props.banned = false;
-    this.props.updatedAt = new Date();
+    this.updateUpdatedAt(new Date());
     DomainEvents.dispatch(new UserUnbanned(this.props.id));
   }
 }

@@ -2,7 +2,6 @@ import { User } from '../entities/User';
 
 
 export interface IUserRepository {
-  findByUsername(username: string): unknown;
   findAll(): User[] | PromiseLike<User[]>;
   create(user: User): Promise<User>;
   findById(id: number): Promise<User | null>;
