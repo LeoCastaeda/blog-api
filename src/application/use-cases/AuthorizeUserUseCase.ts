@@ -7,8 +7,14 @@ export class AuthorizeUserUseCase {
 
   private checkAccess(role: Role, action: string): boolean {
     const rolePermissions = {
-      admin: ['viewAllUsers', 'banUser', 'eliminatePost', 'view', 'create', 'edit', 'softDelete', 'recover', 'like', 'editProfile'],
-      simpleUser: ['viewOwn', 'create', 'editOwn', 'softDeleteOwn', 'like', 'view', 'editProfile'],
+      admin: [
+        'viewAllUsers', 'banUser', 'eliminatePost', 'view', 'create', 'edit', 
+        'softDelete', 'recover', 'like', 'editProfile', 'deleteUser', 'updateUser'
+      ],
+      simpleUser: [
+        'viewOwn', 'create', 'editOwn', 'softDeleteOwn', 'like', 'view', 
+        'editProfile', 'comment', 'report'
+      ],
     };
 
     return rolePermissions[role]?.includes(action) || false;

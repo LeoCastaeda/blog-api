@@ -1,7 +1,7 @@
 import { Request, Response } from 'express';
 import { UserService } from '../../application/services/userService';
 import { BanUserUseCase } from '../../application/use-cases/BanUserUseCase';
-import { AuthorizeUserUseCase } from '../../application/use-cases/AuthorizeUser';
+import { AuthorizeUserUseCase } from '../../application/use-cases/AuthorizeUserUseCase';
 import { Role } from '../../domain/entities/Role';
 
 interface AuthenticatedRequest extends Request {
