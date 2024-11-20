@@ -1,16 +1,8 @@
+
 import { Post } from '../../domain/entities/Post';
 import { IPostRepository } from '../../domain/repositories/IPostRepository';
 
 export class PostService {
-  countLikes(postId: number): number | PromiseLike<number> {
-      throw new Error('Method not implemented.');
-  }
-  likePost(postId: number, userId: number): void | PromiseLike<void> {
-      throw new Error('Method not implemented.');
-  }
-  getUserPosts(userId: number): Post[] | PromiseLike<Post[]> {
-      throw new Error('Method not implemented.');
-  }
   constructor(private postRepository: IPostRepository) {}
 
   async createPost(title: string, content: string, authorId: number): Promise<Post> {
@@ -32,8 +24,19 @@ export class PostService {
   }
 
   async deletePost(id: number): Promise<boolean> {
-     const result = await this.postRepository.delete(id);
-     return result !== null;
+    return this.postRepository.delete(id);
+  }
+
+  async countLikes(postId: number): Promise<number> {
+    return this.postRepository.countLikes(postId);
+  }
+
+  async likePost(postId: number, userId: number): Promise<void> {
+    return this.postRepository.likePost(postId, userId);
+  }
+
+  async getUserPosts(userId: number): Promise<Post[]> {
+    return this.postRepository.findUserPosts(userId);
   }
 }
 

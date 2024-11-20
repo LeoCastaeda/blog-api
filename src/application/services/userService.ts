@@ -41,6 +41,7 @@ export class UserService {
     return this.updateUserData(userId, updates);
   }
 
+
   async updateUserData(userId: number, newData: Partial<UserProps>) {
     const user = await this.userRepository.findById(userId);
 

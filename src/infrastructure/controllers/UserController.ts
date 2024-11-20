@@ -1,8 +1,19 @@
 import { Request, Response } from 'express';
 import { UserService } from '../../application/services/userService';
+import { BanUserUseCase } from '../../application/use-cases/BanUserUseCase';
+import { AuthorizeUserUseCase } from '../../application/use-cases/AuthorizeUser';
+import { Role } from '../../domain/entities/Role';
+
+interface AuthenticatedRequest extends Request {
+  user?: { id: number; role: Role };
+}
 
 export class UserController {
-  constructor(private userService: UserService) {}
+  constructor(
+    private userService: UserService,
+    private banUserUseCase: BanUserUseCase,
+    private authorizeUserUseCase: AuthorizeUserUseCase
+  ) {}
 
   async createUser(req: Request, res: Response): Promise<void> {
     try {
@@ -52,29 +63,26 @@ export class UserController {
   async banUser(req: Request, res: Response): Promise<void> {
     try {
       const { id } = req.params;
-      await this.userService.banUser(Number(id));
+      await this.banUserUseCase.execute({ userId: Number(id) });
       res.status(200).json({ message: 'User banned successfully' });
     } catch (error) {
       res.status(400).json({ error: (error as Error).message });
     }
   }
 
-  async unbanUser(req: Request, res: Response): Promise<void> {
+  async authorizeUser(req: AuthenticatedRequest, res: Response): Promise<void> {
+    const { userId, action } = req.body;
     try {
-      const { id } = req.params;
-      await this.userService.unbanUser(Number(id));
-      res.status(200).json({ message: 'User unbanned successfully' });
-    } catch (error) {
-      res.status(400).json({ error: (error as Error).message });
-    }
-  }
-
-  async updateEmail(req: Request, res: Response): Promise<void> {
-    try {
-      const { id } = req.params;
-      const { email } = req.body;
-      await this.userService.updateUserEmail(Number(id), email);
-      res.status(200).json({ message: 'Email updated successfully' });
+      const { user } = req;
+      if (!user || !user.role) {
+        throw new Error('User role is required for authorization');
+      }
+      const isAuthorized = await this.authorizeUserUseCase.execute({ userId, userRole: user.role, action });
+      if (isAuthorized) {
+        res.status(200).json({ message: 'User is authorized for this action' });
+      } else {
+        res.status(403).json({ error: 'User is not authorized for this action' });
+      }
     } catch (error) {
       res.status(400).json({ error: (error as Error).message });
     }

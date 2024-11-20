@@ -1,11 +1,20 @@
-import { Post } from '../../domain/entities/Post';
+import { EditPostDto } from '../dtos/edit-post.dto';
 import { PostService } from '../services/postService';
+import { Post } from '../../domain/entities/Post';
 
-export class EditPost {
-    constructor(private postService: PostService) {}
+export class EditPostUseCase {
+  constructor(private postService: PostService) {}
 
-    async execute(post: Post): Promise<void> {
-        return this.postService.updatePost(post);   
-
-    }
+  async execute(dto: EditPostDto): Promise<void> {
+    const post = Post.with({
+      id: dto.id,
+      title: dto.title,
+      content: dto.content,
+      authorId: dto.authorId,
+      createdAt: dto.createdAt,
+      updatedAt: dto.updatedAt,
+      deleted: dto.deleted
+    });
+    return this.postService.updatePost(post);
+  }
 }

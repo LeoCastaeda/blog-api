@@ -1,10 +1,11 @@
-import { Role } from '../../domain/entities/Role';
+import { UpdateUserProfileDto } from '../dtos/update-user-profile.dto';
 import { UserService } from '../services/userService';
 
 export class UpdateUserProfileUseCase {
-    constructor(private userService: UserService) {}
-    async execute(userId: number, username: string, email: string, password: string, role: Role) {
-        return this.userService.updateUserProfile(userId,username, email, password, role);     
+  constructor(private userService: UserService) {}
 
-    }
+  async execute(dto: UpdateUserProfileDto) {
+    const { userId, username, email, password, role } = dto;
+    return this.userService.updateUserProfile(userId, username, email, password, role);
+  }
 }

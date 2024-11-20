@@ -5,7 +5,10 @@ export interface IPostRepository {
   findAll(): Promise<Post[]>;
   save(post: Post): Promise<void>;
   update(post: Post): Promise<void>;
-  delete(id: number): Promise<void>;
+  delete(id: number): Promise<boolean>;
+  countLikes(postId: number): Promise<number>;
+  likePost(postId: number, userId: number): Promise<void>;
+  findUserPosts(userId: number): Promise<Post[]>;
 }
 
 export default IPostRepository;

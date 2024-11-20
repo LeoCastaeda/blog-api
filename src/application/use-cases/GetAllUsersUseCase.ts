@@ -1,10 +1,16 @@
 import { UserService } from '../services/userService';
-import { User } from '../../domain/entities/User';
+import { UserDto } from '../dtos/user.dto';
 
 export class GetAllUsersUseCase {
   constructor(private userService: UserService) {}
 
-  async execute(): Promise<User[]> {
-    return this.userService.getAllUsers();
+  async execute(): Promise<UserDto[]> {
+    const users = await this.userService.getAllUsers();
+    return users.map(user => ({
+      id: user.id,
+      username: user.username,
+      email: user.email,
+      role: user.role
+    }));
   }
 }

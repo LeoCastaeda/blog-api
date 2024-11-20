@@ -1,12 +1,12 @@
-// src/application/usecases/RegisterUser.ts
-import { Role } from '../../domain/entities/Role';
+
+import { RegisterUserDto } from '../dtos/register-user.dto';
 import { UserService } from '../services/userService';
 
 export class RegisterUser {
   constructor(private userService: UserService) {}
 
-  async execute(username: string, email: string, password: string, role: Role) {
+  async execute(dto: RegisterUserDto) {
+    const { username, email, password, role } = dto;
     return this.userService.createUser(username, email, password, role);
   }
 }
-

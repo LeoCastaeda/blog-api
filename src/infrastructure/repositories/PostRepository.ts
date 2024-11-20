@@ -12,13 +12,13 @@ export class PostRepository implements IPostRepository {
             authorId: post.authorId,
             createdAt: post.createdAt,
             updatedAt: post.updatedAt,
-            deleted: post.deleted ?? false, // Si `deleted` no es nulo/indefinido
+            deleted: post.deleted ?? false,
         }) : null;
     }
 
     async findAll(): Promise<Post[]> {
         const posts = await prisma.post.findMany({
-            where: { deleted: false }, // Solo publicaciones no eliminadas
+            where: { deleted: false },
         });
         return posts.map((post) =>
             Post.with({
@@ -51,16 +51,47 @@ export class PostRepository implements IPostRepository {
             data: {
                 title: post.title,
                 content: post.content,
-                updatedAt: new Date(), // Actualizar la fecha de modificación
+                updatedAt: new Date(),
             },
         });
     }
 
-    async delete(id: number): Promise<void> {
-        // Implementación de soft delete
-        await prisma.post.update({
+    async delete(id: number): Promise<boolean> {
+        const result = await prisma.post.update({
             where: { id },
             data: { deleted: true },
         });
+        return result !== null;
+    }
+
+    async countLikes(postId: number): Promise<number> {
+        const count = await prisma.like.count({ where: { postId } });
+        return count;
+    }
+
+    async likePost(postId: number, userId: number): Promise<void> {
+        await prisma.like.create({
+            data: {
+                postId,
+                userId,
+            },
+        });
+    }
+
+    async findUserPosts(userId: number): Promise<Post[]> {
+        const posts = await prisma.post.findMany({
+            where: { authorId: userId, deleted: false },
+        });
+        return posts.map((post) =>
+            Post.with({
+                id: post.id,
+                title: post.title,
+                content: post.content,
+                authorId: post.authorId,
+                createdAt: post.createdAt,
+                updatedAt: post.updatedAt,
+                deleted: post.deleted,
+            })
+        );
     }
 }
