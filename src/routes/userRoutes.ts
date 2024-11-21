@@ -1,26 +1,23 @@
 import { Router } from 'express';
-import UserController from '../controllers/UserController';
-import { authenticateJWT } from '../infrastructure/middlewares/authenticateJWT';
-import { authorize } from '../infrastructure/middlewares/authorizeMiddleware';
+import { UserService } from '../application/services/userService';
+import { BanUserUseCase } from '../application/use-cases/BanUserUseCase';
+import { AuthorizeUserUseCase } from '../application/use-cases/AuthorizeUserUseCase';
+import { UserController } from '../infrastructure/controllers/UserController';
+import { UserRepository } from '../infrastructure/repositories/UserRepository';
 
 const router = Router();
 
-// Ruta para registro de usuario
-router.post('/register', UserController.register);
+const userRepository =  new UserRepository();
+const userService = new UserService(userRepository);
+const banUserUseCase = new BanUserUseCase(userService);
+const authorizeUserUseCase = new AuthorizeUserUseCase(userService);
+const userController = new UserController(userService, banUserUseCase, authorizeUserUseCase);
 
-// Ruta para login de usuario
-router.post('/login', UserController.login);
-
-// Ruta para obtener todos los usuarios
-router.get('/users', authenticateJWT, authorize(['admin']), UserController.getAllUsers);
-
-// Ruta para obtener un usuario por su ID
-router.get('/users/:id', authenticateJWT, authorize(['admin', 'user']), UserController.getUserById);
-
-// Ruta para actualizar un usuario
-router.put('/users/:id', authenticateJWT, authorize(['admin', 'user']), UserController.updateUser);
-
-// Ruta para eliminar un usuario
-router.delete('/users/:id', authenticateJWT, authorize(['admin']), UserController.deleteUser);
+router.post('/users', (req, res) => userController.createUser(req, res));
+router.get('/users/:id', (req, res) => userController.getUserById(req, res));
+router.put('/users/:id', (req, res) => userController.updateUser(req, res));
+router.delete('/users/:id', (req, res) => userController.deleteUser(req, res));
+router.post('/users/ban/:id', (req, res) => userController.banUser(req, res));
+router.post('/users/authorize', (req, res) => userController.authorizeUser(req, res));
 
 export default router;

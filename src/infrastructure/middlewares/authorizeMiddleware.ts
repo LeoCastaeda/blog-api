@@ -1,7 +1,12 @@
 import { Request, Response, NextFunction } from 'express';
+import { Role } from '../../domain/entities/Role';  
+
+interface AuthenticatedRequest extends Request {
+  user?: { id: number; role: Role };
+}
 
 export function authorize(roles: string[]) {
-  return (req: Request, res: Response, next: NextFunction) => {
+  return (req: AuthenticatedRequest, res: Response, next: NextFunction) => {
     const userRole = req.user?.role;
 
     if (!userRole || !roles.includes(userRole)) {

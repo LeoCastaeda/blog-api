@@ -3,37 +3,51 @@ import { Like } from '../../domain/entities/Like';
 import prisma from '../database/prismaClient';
 
 export class LikeRepository implements ILikeRepository {
-  softDelete: any;
   async findById(id: number): Promise<Like | null> {
     const like = await prisma.like.findUnique({
-      where: { id },
+      where: { 
+        id,
+        deleted: false
+      }
     });
     return like ? Like.with(like) : null;
   }
 
   async findByUserId(userId: number): Promise<Like[]> {
     const likes = await prisma.like.findMany({
-      where: { userId, deleted: false },  // Filtrar los likes eliminados
+      where: { 
+        userId, 
+        deleted: false 
+      }
     });
     return likes.map(like => Like.with(like));
   }
 
   async findByPostId(postId: number): Promise<Like[]> {
     const likes = await prisma.like.findMany({
-      where: { postId, deleted: false },  // Filtrar los likes eliminados
+      where: { 
+        postId, 
+        deleted: false 
+      }
     });
     return likes.map(like => Like.with(like));
   }
 
   async countByPostId(postId: number): Promise<number> {
     return await prisma.like.count({
-      where: { postId, deleted: false },  // Filtrar los likes eliminados
+      where: { 
+        postId, 
+        deleted: false 
+      }
     });
   }
 
   async countByUserId(userId: number): Promise<number> {
     return await prisma.like.count({
-      where: { userId, deleted: false },  // Filtrar los likes eliminados
+      where: { 
+        userId, 
+        deleted: false 
+      }
     });
   }
 
@@ -55,7 +69,16 @@ export class LikeRepository implements ILikeRepository {
   async delete(id: number): Promise<void> {
     await prisma.like.update({
       where: { id },
-      data: { deleted: true },  // Soft delete
+      data: { deleted: true }
     });
+  }
+
+  async findAll(): Promise<Like[]> {
+    const likes = await prisma.like.findMany({
+      where: {
+        deleted: false
+      }
+    });
+    return likes.map(like => Like.with(like));
   }
 }

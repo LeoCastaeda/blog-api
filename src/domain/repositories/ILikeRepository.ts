@@ -7,7 +7,8 @@ export interface ILikeRepository {
   save(like: Like): Promise<Like>;
   delete(id: number): Promise<void>;
   countByPostId(postId: number): Promise<number>; 
-  countByUserId(userId: number): Promise<number>; 
+  countByUserId(userId: number): Promise<number>;
+  findAll(): Promise<Like[]>;
 }
 
 export default ILikeRepository;

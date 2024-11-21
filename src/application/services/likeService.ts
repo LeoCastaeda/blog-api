@@ -1,4 +1,4 @@
-import { Like } from  '../../domain/entities/Like';
+import { Like } from '../../domain/entities/Like';
 import { ILikeRepository } from '../../domain/repositories/ILikeRepository';
 
 export class LikeService {
@@ -29,6 +29,13 @@ export class LikeService {
   async countLikesByUserId(userId: number): Promise<number> {
     return this.likeRepository.countByUserId(userId);
   }
-}
 
-export default LikeService;
+  // Nuevos métodos
+  async getLikeById(id: number): Promise<Like | null> {
+    return this.likeRepository.findById(id);
+  }
+
+  async getAllLikes(): Promise<Like[]> {
+    return this.likeRepository.findAll();
+  }
+}
