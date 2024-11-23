@@ -1,19 +1,112 @@
-### 1. Primero registra un usuario
-POST http://localhost:3000/api/auth/register
+### Register a new user
+POST http://localhost:3000/auth/register
 Content-Type: application/json
 
 {
-    "username": "LeoCastaneda",
-    "email": "leo@example.com",
-    "password": "123456",
+    "username": "leonardoc",
+    "email": "leo.casta@example.com",
+    "password": "secreto2024",
     "role": "admin"
 }
 
-### 2. Luego haz login para obtener el token
-POST http://localhost:3000/api/auth/login
+###
+
+POST http://localhost:3000/auth/register
 Content-Type: application/json
 
 {
-    "email": "leo@example.com",
-    "password": "password123"
+    "username": "mariagonzalez",
+    "email": "maria.g@example.com",
+    "password": "contraseña123",
+    "role": "simpleUser"
+}
+
+###
+
+### Login a user
+POST http://localhost:3000/auth/login
+Content-Type: application/json
+
+{
+    "email": "leo.casta@example.com",
+    "password": "secreto2024"
+}
+
+###
+
+POST http://localhost:3000/auth/login
+Content-Type: application/json
+
+{
+    "email": "maria.g@example.com",
+    "password": "contraseña123"
+}
+
+###
+
+### Get user by ID
+GET http://localhost:3000/users/1
+Content-Type: application/json
+
+###
+
+GET http://localhost:3000/users/2
+Content-Type: application/json
+
+###
+
+### Update user by ID
+PUT http://localhost:3000/users/1
+Content-Type: application/json
+
+{
+    "username": "leo_actualizado",
+    "email": "leo.updated@example.com",
+    "role": "admin"
+}
+
+###
+
+PUT http://localhost:3000/users/2
+Content-Type: application/json
+
+{
+    "username": "maria_actualizada",
+    "email": "maria.updated@example.com",
+    "role": "simpleUser"
+}
+
+###
+
+### Delete user by ID
+DELETE http://localhost:3000/users/1
+Content-Type: application/json
+
+###
+
+DELETE http://localhost:3000/users/2
+Content-Type: application/json
+
+###
+
+### Ban a user
+PATCH http://localhost:3000/users/2/ban
+Content-Type: application/json
+
+###
+
+### Unban a user
+PATCH http://localhost:3000/users/2/unban
+Content-Type: application/json
+
+###
+
+### Authorize a user for an action
+POST http://localhost:3000/users/authorize
+Content-Type: application/json
+Authorization: Bearer <YOUR_TOKEN_HERE>
+
+{
+    "action": "deletePost",
+    "userId": 2
 }

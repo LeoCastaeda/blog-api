@@ -1,31 +1,29 @@
-import { AuthorizeUserDto } from "../dtos/authorize-user.dto";
-import { UserService } from "../services/userService";
 import { Role } from "../../domain/entities/Role";
 
+const permissions: Record<Role, string[]> = {
+  [Role.Admin]: ["create", "read", "update", "delete"],
+  [Role.SimpleUser]: ["read"],
+  [Role.User]: []
+};
+
+interface AuthorizeUserInput {
+  userId: number;
+  userRole: Role;
+  action: string;
+}
+
 export class AuthorizeUserUseCase {
-  constructor(private userService: UserService) {}
+  public execute(input: AuthorizeUserInput): boolean {
+    const { userRole, action } = input;
 
-  private checkAccess(role: Role, action: string): boolean {
-    const rolePermissions = {
-      admin: [
-        'viewAllUsers', 'banUser', 'eliminatePost', 'view', 'create', 'edit', 
-        'softDelete', 'recover', 'like', 'editProfile', 'deleteUser', 'updateUser'
-      ],
-      simpleUser: [
-        'viewOwn', 'create', 'editOwn', 'softDeleteOwn', 'like', 'view', 
-        'editProfile', 'comment', 'report'
-      ],
-    };
-
-    return rolePermissions[role]?.includes(action) || false;
-  }
-
-  async execute(dto: AuthorizeUserDto): Promise<boolean> {
-    const user = await this.userService.findById(dto.userId);
-    if (!user) {
-      throw new Error('User not found');
+    // Verificar que el rol tenga permisos asignados
+    if (!permissions[userRole]) {
+      throw new Error(`Role ${userRole} does not have defined permissions.`);
     }
 
-    return this.checkAccess(dto.userRole, dto.action);
+    // Comprobar si el rol tiene el permiso para la acción solicitada
+    return permissions[userRole].includes(action);
   }
 }
+
+export default AuthorizeUserUseCase;

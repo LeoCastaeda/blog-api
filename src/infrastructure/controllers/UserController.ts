@@ -77,7 +77,7 @@ export class UserController {
       if (!user || !user.role) {
         throw new Error('User role is required for authorization');
       }
-      const isAuthorized = await this.authorizeUserUseCase.execute({ userId, userRole: user.role, action });
+      const isAuthorized = this.authorizeUserUseCase.execute({ userId: Number(userId), userRole: user.role, action });
       if (isAuthorized) {
         res.status(200).json({ message: 'User is authorized for this action' });
       } else {
