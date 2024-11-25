@@ -1,12 +1,10 @@
+import { AuthService } from '../services/AuthService';
+import { Role } from '../../domain/entities/User';
 
-import { RegisterUserDto } from '../dtos/register-user.dto';
-import { UserService } from '../services/userService';
+export class CreateUserCase {
+  constructor(private authService: AuthService) {}
 
-export class RegisterUser {
-  constructor(private userService: UserService) {}
-
-  async execute(dto: RegisterUserDto) {
-    const { username, email, password, role } = dto;
-    return this.userService.createUser(username, email, password, role);
+  async execute(username: string, email: string, password: string, role: Role) {
+    return this.authService.registrar(username, email, password, role);
   }
 }

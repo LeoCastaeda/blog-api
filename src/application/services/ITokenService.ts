@@ -1,5 +1,10 @@
+export interface TokenPayload {
+  id: number;
+  role: string;
+}
+
 export interface ITokenService {
-    generateToken(payload: object): string;
+    generateToken(payload: TokenPayload): string;
     verifyToken(token: string): object | null;
   }
   

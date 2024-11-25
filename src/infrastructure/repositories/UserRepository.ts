@@ -4,28 +4,24 @@ import { Role as CustomRole } from '../../domain/entities/Role';
 import prisma from '../database/prismaClient';
 import { Role as PrismaRole } from '@prisma/client';
 
-// Map Prisma role to application role
+
 function mapPrismaRoleToRole(prismaRole: PrismaRole): CustomRole {
-  switch (prismaRole) {
-    case PrismaRole.admin:
-      return CustomRole.Admin;
-    case PrismaRole.simpleUser:
-      return CustomRole.User;
-    default:
-      throw new Error(`Unknown role: ${prismaRole}`);
-  }
+  const roleMap = {
+    [PrismaRole.admin]: CustomRole.Admin,
+    [PrismaRole.simpleUser]: CustomRole.SimpleUser,
+  };
+  return roleMap[prismaRole] || CustomRole.SimpleUser;
 }
 
-// Map application role to Prisma role
 function mapRoleToPrismaRole(role: CustomRole): PrismaRole {
-  switch (role) {
-    case CustomRole.Admin:
-      return PrismaRole.admin;
-    case CustomRole.User:
-      return PrismaRole.simpleUser;
-    default:
-      throw new Error(`Unknown role: ${role}`);
+  const roleMap: { [key in CustomRole]: PrismaRole } = {
+    [CustomRole.Admin]: PrismaRole.admin,
+    [CustomRole.SimpleUser]: PrismaRole.simpleUser,
+  };
+  if (!roleMap[role]) {
+    throw new Error(`Unknown role: ${role}`);
   }
+  return roleMap[role];
 }
 
 export class UserRepository implements IUserRepository {
@@ -129,7 +125,6 @@ export class UserRepository implements IUserRepository {
       role: newData.role ? mapRoleToPrismaRole(newData.role) : undefined,
     };
 
-    // Filtrar campos undefined para evitar errores de Prisma
     const cleanData = Object.fromEntries(
       Object.entries(updateData).filter(([, value]) => value !== undefined)
     );
@@ -157,6 +152,11 @@ export class UserRepository implements IUserRepository {
       data: { banned: false },
     });
   }
+  async getAllUsers() {
+    const users = await prisma.user.findMany();
+    console.log("Users de la base de datos:", users);
+    return users.map(user => ({ id: user.id, username: user.username, email: user.email, role: user.role }));
+  }
 
   async updateEmail(userId: number, newEmail: string): Promise<void> {
     await prisma.user.update({
@@ -165,3 +165,5 @@ export class UserRepository implements IUserRepository {
     });
   }
 }
+
+

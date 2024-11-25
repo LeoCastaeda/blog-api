@@ -1,112 +1,127 @@
-### Register a new user
 POST http://localhost:3000/auth/register
 Content-Type: application/json
 
 {
-    "username": "leonardoc",
-    "email": "leo.casta@example.com",
-    "password": "secreto2024",
-    "role": "admin"
+  "username": "luyleo",
+  "email": "leoylu@example.com",
+  "password": "12345",
+  "role": "simpleUser"
 }
-
-###
-
-POST http://localhost:3000/auth/register
-Content-Type: application/json
-
-{
-    "username": "mariagonzalez",
-    "email": "maria.g@example.com",
-    "password": "contraseña123",
-    "role": "simpleUser"
-}
-
-###
-
-### Login a user
+### 
 POST http://localhost:3000/auth/login
 Content-Type: application/json
 
 {
-    "email": "leo.casta@example.com",
-    "password": "secreto2024"
+  "email": "leoylu@example.com",
+  "password": "12345",
 }
-
 ###
-
-POST http://localhost:3000/auth/login
+### Logout user (placeholder token for testing)
+POST http://localhost:3000/auth/logout
 Content-Type: application/json
 
 {
-    "email": "maria.g@example.com",
-    "password": "contraseña123"
+ "token":  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MjMsInJvbGUiOiJVc2VyIiwiaWF0IjoxNzMyNDA3NTU5LCJleHAiOjE3MzI0MTExNTl9.Av45MJC-ovfSH7qXTaIl0IrUO52AP8NflXCdGhYyd00"
 }
+### Obtener todos los usuarios  
+ GET http://localhost:3000/users
+ Content-Type: application/json
+
+### Obtener por id
+GET http://localhost:3000/users/27
+
+### Obtener otro usuario por ID
+GET http://localhost:3000/users/8
+
 
 ###
-
-### Get user by ID
-GET http://localhost:3000/users/1
-Content-Type: application/json
-
-###
-
-GET http://localhost:3000/users/2
-Content-Type: application/json
-
-###
-
-### Update user by ID
-PUT http://localhost:3000/users/1
+PUT http://localhost:3000/users/8
 Content-Type: application/json
 
 {
-    "username": "leo_actualizado",
-    "email": "leo.updated@example.com",
+    "username": "newUsrrruurername",
+    "email": "newEmarrrruuil@example.com",
     "role": "admin"
 }
-
 ###
+DELETE http://localhost:3000/users/20
 
-PUT http://localhost:3000/users/2
+### Obtener todos los usuarios
+POST http://localhost:3000/users/8/ban
 Content-Type: application/json
 
 {
-    "username": "maria_actualizada",
-    "email": "maria.updated@example.com",
-    "role": "simpleUser"
 }
-
 ###
-
-### Delete user by ID
-DELETE http://localhost:3000/users/1
+POST http://localhost:3000/users/8/unban
 Content-Type: application/json
-
-###
-
-DELETE http://localhost:3000/users/2
-Content-Type: application/json
-
-###
-
-### Ban a user
-PATCH http://localhost:3000/users/2/ban
-Content-Type: application/json
-
-###
-
-### Unban a user
-PATCH http://localhost:3000/users/2/unban
-Content-Type: application/json
-
-###
-
-### Authorize a user for an action
-POST http://localhost:3000/users/authorize
-Content-Type: application/json
-Authorization: Bearer <YOUR_TOKEN_HERE>
 
 {
-    "action": "deletePost",
-    "userId": 2
 }
+###
+POST http://localhost:3000/users/30/authorize
+Content-Type: application/json
+Authorization: Bearer <your_access_token>
+
+{
+  "userId": 30,
+  useRole: "admin",
+  "action": "read"
+}
+###
+POST http://localhost:3000/users/20/unban
+Authorization: Bearer <your_access_token>
+
+###
+GET http://localhost:3000/api/users/28/authorize
+
+###
+# Banear un usuario
+POST http://localhost:3000/users/8/ban
+Content-Type: application/json
+
+{
+  "unban": false
+}
+###
+# Desbanear un usuario
+POST http://localhost:3000/users/8/unban
+Content-Type: application/json
+
+{
+  "unban": true
+}
+###
+# Autorizar un usuario
+POST http://localhost:3000/users/30/authorize
+Content-Type: application/json
+
+{
+  
+  action: "viewPost" 
+}
+###
+POST http://localhost:3000/posts
+Content-Type: application/json
+
+{
+  "title": "My First Post",
+  "content": "This is the content of my first post",
+  "authorId": 20
+}
+
+###
+curl -X POST http://localhost:3000/auth/login \
+     -H "Content-Type: application/json" \
+     -d '{
+           "email": "leoylu@example.com",
+           "password": "12345"
+         }'
+
+
+
+
+
+
+
+

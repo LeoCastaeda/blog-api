@@ -1,11 +1,18 @@
 import { LoginUserDto } from '../dtos/login-user.dto';
-import { UserService } from '../services/userService';
+import { AuthService } from '../services/AuthService';
 
 export class LoginUser {
-  constructor(private userService: UserService) {}
+  constructor(private authService: AuthService) {}
 
   async execute(dto: LoginUserDto) {
     const { email, password } = dto;
-    return this.userService.loginUser(email, password);
+
+    try {
+      const user = await this.authService.iniciarSesion(email, password);
+    return user;
+    } catch (error) {
+      throw new Error('User not found');
+    }
+  
   }
 }

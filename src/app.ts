@@ -4,6 +4,9 @@ import authRoutes from './routes/authRoutes';
 import userRoutes from './routes/userRoutes';
 import likeRoutes from './routes/likeRoutes';
 import postRoutes from './routes/postRoutes';
+import dotenv from 'dotenv';
+
+dotenv.config();
 
 const app = express();
 const port = process.env.PORT || 3000;
@@ -12,7 +15,7 @@ app.use(express.json());
 app.use(cors());
 
 // Rutas
-app.use('/auth/register', authRoutes); 
+app.use('/auth/', authRoutes); 
 app.use('/users', userRoutes);
 app.use('/likes', likeRoutes);
 app.use('/posts', postRoutes);

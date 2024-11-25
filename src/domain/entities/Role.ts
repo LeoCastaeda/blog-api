@@ -1,5 +1,10 @@
 export enum Role {
     Admin = 'admin',
-    SimpleUser = 'simpleUser',
-    User = "User",
+    SimpleUser = 'simpleUser'
   }
+
+  const rolePermissions = {
+    [Role.Admin]: ['create', 'read', 'update', 'delete'],
+    [Role.SimpleUser]: ['read'],
+  };
+

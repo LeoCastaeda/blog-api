@@ -1,22 +1,19 @@
-import { ITokenService } from "./ITokenService";
-import jwt, { JwtPayload } from 'jsonwebtoken';
+import { ITokenService, TokenPayload } from "./ITokenService";
+import jwt from 'jsonwebtoken';
 
 const secret = process.env.JWT_SECRET || 'defaultSecret';
 
 class TokenService implements ITokenService {
-  generateToken(payload: object): string {
+  generateToken(payload: TokenPayload): string {
     return jwt.sign(payload, secret, { expiresIn: '1h' });
   }
 
-  verifyToken(token: string): object | null {
+  verifyToken(token: string): TokenPayload | null {
     try {
-      const decoded = jwt.verify(token, secret);
-      // Verificamos que decoded sea un objeto (JwtPayload)
-      return typeof decoded === 'object' ? decoded : null;
+      return jwt.verify(token, secret) as TokenPayload;
     } catch (error) {
-      return null;
+      return null; // Retorna null si el token no es válido
     }
   }
-}
-
+} 
 export default new TokenService();
