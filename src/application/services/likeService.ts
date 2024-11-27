@@ -1,41 +1,36 @@
+import { LikePostDto } from '../../application/dtos/like-post.dto';
+import { CountLikesDto } from '../../application/dtos/count-likes.dto';
+import { LikeRepository } from '../../infrastructure/repositories/LikeRepository';
 import { Like } from '../../domain/entities/Like';
-import { ILikeRepository } from '../../domain/repositories/ILikeRepository';
 
 export class LikeService {
-  constructor(private likeRepository: ILikeRepository) {}
+  constructor(private likeRepository: LikeRepository) {}
 
-  async addLike(userId: number, postId: number): Promise<Like> {
+  async addLike(dto: LikePostDto): Promise<Like> {
+    const { userId, postId } = dto;
+
+    const existingLike = await this.likeRepository.findByUserIdAndPostId(userId, postId);
+    if (existingLike) {
+      throw new Error('Ya has dado like a este post');
+    }
+
     const like = Like.create(userId, postId);
-    await this.likeRepository.save(like);
-    return like;
+    return this.likeRepository.save(like);
   }
 
-  async removeLike(id: number): Promise<void> {
-    await this.likeRepository.delete(id);
+  async removeLike(dto: LikePostDto): Promise<void> {
+    const { userId, postId } = dto;
+
+    const existingLike = await this.likeRepository.findByUserIdAndPostId(userId, postId);
+    if (!existingLike) {
+      throw new Error('No puedes eliminar un like que no existe');
+    }
+
+    await this.likeRepository.delete(existingLike.id!);
   }
 
-  async getLikesByUserId(userId: number): Promise<Like[]> {
-    return this.likeRepository.findByUserId(userId);
-  }
-
-  async getLikesByPostId(postId: number): Promise<Like[]> {
-    return this.likeRepository.findByPostId(postId);
-  }
-
-  async countLikesByPostId(postId: number): Promise<number> {
+  async countLikesByPost(dto: CountLikesDto): Promise<number> {
+    const { postId } = dto;
     return this.likeRepository.countByPostId(postId);
-  }
-
-  async countLikesByUserId(userId: number): Promise<number> {
-    return this.likeRepository.countByUserId(userId);
-  }
-
-  // Nuevos métodos
-  async getLikeById(id: number): Promise<Like | null> {
-    return this.likeRepository.findById(id);
-  }
-
-  async getAllLikes(): Promise<Like[]> {
-    return this.likeRepository.findAll();
   }
 }

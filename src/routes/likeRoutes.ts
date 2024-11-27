@@ -1,56 +1,40 @@
-import { Router, Request, Response } from 'express';
+import { Router } from 'express';
 import { LikeController } from '../infrastructure/controllers/LikeController';
-import { LikeRepository } from '../infrastructure/repositories/LikeRepository';
 import { LikeService } from '../application/services/LikeService';
-import { PostService } from '../application/services/postService';
-import { LikePostUseCase } from '../application/use-cases/LikePostUseCase';
-import { CountLikesUseCase } from '../application/use-cases/CountLikesUseCase';
+import { LikeRepository } from '../infrastructure/repositories/LikeRepository';
 import { authenticateJWT } from '../infrastructure/middlewares/authenticateJWT';
-import { PostRepository } from '../infrastructure/repositories/PostRepository';
+import authorizationMiddleware from '../infrastructure/middlewares/authorizeMiddleware';
 
-const router = Router();
+const likeRouter = Router();
 
-
+// Instancias necesarias
 const likeRepository = new LikeRepository();
-const postRepository = new PostRepository();
 const likeService = new LikeService(likeRepository);
-const postService = new PostService(postRepository);
-const likePostUseCase = new LikePostUseCase(postService);
-const countLikesUseCase = new CountLikesUseCase(postService);
+const likeController = new LikeController(likeService);
 
-const likeController = new LikeController(
-    likeService,
-    likePostUseCase,
-    countLikesUseCase
+// Ruta para agregar un "like"
+likeRouter.post(
+  '/',
+  authenticateJWT, // Verifica autenticación
+  authorizationMiddleware('create'), // Verifica autorización
+  (req, res) => likeController.createLike(req, res)
 );
 
-const protectedRouter = Router();
+// Ruta para eliminar un "like"
+likeRouter.delete(
+  '/',
+  authenticateJWT, // Verifica autenticación
+  authorizationMiddleware('delete'), // Verifica autorización
+  (req, res) => likeController.removeLike(req, res)
+);
 
-protectedRouter.post('/', (req: Request, res: Response) => {
-    likeController.createLike(req, res);
-});
+// Ruta para contar "likes" de un post
+likeRouter.get(
+  '/:postId/count',
+  authenticateJWT, // Verifica autenticación
+  authorizationMiddleware('read'), // Verifica autorización
+  (req, res) => likeController.countLikes(req, res)
+);
 
-protectedRouter.delete('/:id', (req: Request, res: Response) => {
-    likeController.removeLike(req, res);
-});
+export default likeRouter;
 
-protectedRouter.get('/user/:userId', (req: Request, res: Response) => {
-    likeController.getLikesByUserId(req, res);
-});
-
-protectedRouter.get('/post/:postId', (req: Request, res: Response) => {
-    likeController.getLikesByPostId(req, res);
-});
-
-protectedRouter.get('/count/post/:postId', (req: Request, res: Response) => {
-    likeController.countLikesByPostId(req, res);
-});
-
-protectedRouter.get('/count/user/:userId', (req: Request, res: Response) => {
-    likeController.countLikesByUserId(req, res);
-});
-
-
-router.use('/', authenticateJWT, protectedRouter);
-
-export default router;

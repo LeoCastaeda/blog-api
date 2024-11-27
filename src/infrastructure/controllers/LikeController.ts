@@ -1,82 +1,88 @@
 import { Request, Response } from 'express';
 import { LikeService } from '../../application/services/LikeService';
-import { LikePostUseCase } from '../../application/use-cases/LikePostUseCase';
-import { CountLikesUseCase } from '../../application/use-cases/CountLikesUseCase';
-import { AppError } from '../middlewares/errorHandler';
 
 export class LikeController {
-    constructor(
-        private readonly likeService: LikeService,
-        private readonly likePostUseCase: LikePostUseCase,
-        private readonly countLikesUseCase: CountLikesUseCase
-    ) {}
+  constructor(private readonly likeService: LikeService) {}
 
-    async createLike(req: Request, res: Response): Promise<void> {
-        try {
-            const { userId, postId } = req.body;
-            
-            if (!userId || !postId) {
-                throw new AppError('userId y postId son requeridos', 400);
-            }
+  /**
+   * Crear un "like" en un post
+   */
+  async createLike(req: Request, res: Response): Promise<void> {
+    try {
+      const userId = req.user?.id; // Asume que el middleware agrega req.user
+      if (!userId) {
+        res.status(400).json({ error: 'userId es requerido' });
+        return;
+      }
+      const { postId } = req.body;
 
-            const like = await this.likeService.addLike(Number(userId), Number(postId));
-            res.status(201).json(like);
-        } catch (error) {
-            if (error instanceof AppError) {
-                res.status(error.statusCode).json({ message: error.message });
-            } else {
-                res.status(500).json({ message: 'Error interno al crear like' });
-            }
-        }
+      // Validar datos requeridos
+      if (!postId) {
+        res.status(400).json({ error: 'postId son requeridos' });
+        return;
+      }
+
+      // Agregar like
+      const like = await this.likeService.addLike({ userId, postId });
+      res.status(201).json({
+        message: 'Like agregado correctamente',
+        like: like.toJSON(),
+      });
+    } catch (error) {
+      // Manejar errores
+      if (error instanceof Error && error.message === 'Ya has dado like a este post') {
+        res.status(409).json({ error: error.message });
+      } else {
+        res.status(500).json({ error: 'Error interno del servidor' });
+      }
     }
+  }
 
-    async removeLike(req: Request, res: Response): Promise<void> {
-        try {
-            const { id } = req.params;
-            await this.likeService.removeLike(Number(id));
-            res.status(200).json({ message: 'Like eliminado correctamente' });
-        } catch (error) {
-            res.status(500).json({ message: 'Error al eliminar like' });
-        }
-    }
+  /**
+   * Eliminar un "like" de un post
+   */
+  async removeLike(req: Request, res: Response): Promise<void> {
+    try {
+      const userId = req.user?.id;
+      const { postId } = req.body;
 
-    async getLikesByUserId(req: Request, res: Response): Promise<void> {
-        try {
-            const { userId } = req.params;
-            const likes = await this.likeService.getLikesByUserId(Number(userId));
-            res.status(200).json(likes);
-        } catch (error) {
-            res.status(500).json({ message: 'Error al obtener likes por usuario' });
-        }
-    }
+      // Validar datos requeridos
+      if (!userId || !postId) {
+        res.status(400).json({ error: 'userId y postId son requeridos' });
+        return;
+      }
 
-    async getLikesByPostId(req: Request, res: Response): Promise<void> {
-        try {
-            const { postId } = req.params;
-            const likes = await this.likeService.getLikesByPostId(Number(postId));
-            res.status(200).json(likes);
-        } catch (error) {
-            res.status(500).json({ message: 'Error al obtener likes por post' });
-        }
+      // Eliminar like
+      await this.likeService.removeLike({ userId, postId });
+      res.status(200).json({ message: 'Like eliminado correctamente' });
+    } catch (error) {
+      // Manejar errores
+      if (error instanceof Error && error.message === 'No puedes eliminar un like que no existe') {
+        res.status(404).json({ error: error.message });
+      } else {
+        res.status(500).json({ error: 'Error interno del servidor' });
+      }
     }
+  }
 
-    async countLikesByPostId(req: Request, res: Response): Promise<void> {
-        try {
-            const { postId } = req.params;
-            const count = await this.countLikesUseCase.execute({ postId: Number(postId) });
-            res.status(200).json({ count });
-        } catch (error) {
-            res.status(500).json({ message: 'Error al contar likes del post' });
-        }
-    }
+  /**
+   * Contar los "likes" de un post
+   */
+  async countLikes(req: Request, res: Response): Promise<void> {
+    try {
+      const { postId } = req.params;
 
-    async countLikesByUserId(req: Request, res: Response): Promise<void> {
-        try {
-            const { userId } = req.params;
-            const count = await this.likeService.countLikesByUserId(Number(userId));
-            res.status(200).json({ count });
-        } catch (error) {
-            res.status(500).json({ message: 'Error al contar likes del usuario' });
-        }
+      // Validar datos requeridos
+      if (!postId) {
+        res.status(400).json({ error: 'postId es requerido' });
+        return;
+      }
+
+      // Contar likes
+      const count = await this.likeService.countLikesByPost({ postId: Number(postId) });
+      res.status(200).json({ count });
+    } catch (error) {
+      res.status(500).json({ error: 'Error interno del servidor' });
     }
+  }
 }

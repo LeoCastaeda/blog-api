@@ -5,7 +5,7 @@ import { Post } from '../../domain/entities/Post';
 export class EditPostUseCase {
   constructor(private postService: PostService) {}
 
-  async execute(dto: EditPostDto): Promise<void> {
+  async execute(dto: EditPostDto): Promise<boolean> {
     const post = Post.with({
       id: dto.id,
       title: dto.title,

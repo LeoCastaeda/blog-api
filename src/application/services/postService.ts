@@ -19,8 +19,9 @@ export class PostService {
     return this.postRepository.findAll();
   }
 
-  async updatePost(post: Post): Promise<void> {
+  async updatePost(post: Post): Promise<boolean> {
     await this.postRepository.update(post);
+    return true;
   }
 
   async deletePost(id: number): Promise<boolean> {

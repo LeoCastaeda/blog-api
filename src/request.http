@@ -2,18 +2,18 @@ POST http://localhost:3000/auth/register
 Content-Type: application/json
 
 {
-  "username": "luyleo",
-  "email": "leoylu@example.com",
+  "username": "Nicolas",
+  "email": "nico@example.com",
   "password": "12345",
-  "role": "simpleUser"
+  "role": "admin"
 }
 ### 
 POST http://localhost:3000/auth/login
 Content-Type: application/json
 
 {
-  "email": "leoylu@example.com",
-  "password": "12345",
+   "email": "nico@example.com",
+  "password": "12345"
 }
 ###
 ### Logout user (placeholder token for testing)
@@ -28,14 +28,14 @@ Content-Type: application/json
  Content-Type: application/json
 
 ### Obtener por id
-GET http://localhost:3000/users/27
+GET http://localhost:3000/users/1
 
 ### Obtener otro usuario por ID
 GET http://localhost:3000/users/8
 
 
 ###
-PUT http://localhost:3000/users/8
+PUT http://localhost:3000/users/1
 Content-Type: application/json
 
 {
@@ -44,16 +44,16 @@ Content-Type: application/json
     "role": "admin"
 }
 ###
-DELETE http://localhost:3000/users/20
+DELETE http://localhost:3000/users/2
 
 ### Obtener todos los usuarios
-POST http://localhost:3000/users/8/ban
+POST http://localhost:3000/users/1/ban
 Content-Type: application/json
 
 {
 }
 ###
-POST http://localhost:3000/users/8/unban
+POST http://localhost:3000/users/1/unban
 Content-Type: application/json
 
 {
@@ -61,23 +61,21 @@ Content-Type: application/json
 ###
 POST http://localhost:3000/users/30/authorize
 Content-Type: application/json
-Authorization: Bearer <your_access_token>
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6Mywicm9sZSI6InNpbXBsZVVzZXIiLCJpYXQiOjE3MzI1ODU0OTYsImV4cCI6MTczMjU4OTA5Nn0.IUC0JEt40Eb9xYLycx6cYXfA9R-kgc8ZmPphYipEWac
 
 {
-  "userId": 30,
-  useRole: "admin",
   "action": "read"
 }
 ###
-POST http://localhost:3000/users/20/unban
-Authorization: Bearer <your_access_token>
+POST http://localhost:3000/users/1/unban
+//Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6NCwicm9sZSI6ImFkbWluIiwiaWF0IjoxNzMyNTg1NzE4LCJleHAiOjE3MzI1ODkzMTh9.CkgWyOAAYO6wRwjMHTmL6umHJ4-xrQmU6IQ-gP86Av8
 
 ###
-GET http://localhost:3000/api/users/28/authorize
+GET http://localhost:3000/api/users/1/authorize
 
 ###
 # Banear un usuario
-POST http://localhost:3000/users/8/ban
+POST http://localhost:3000/users/1/ban
 Content-Type: application/json
 
 {
@@ -85,38 +83,72 @@ Content-Type: application/json
 }
 ###
 # Desbanear un usuario
-POST http://localhost:3000/users/8/unban
+POST http://localhost:3000/users/1/unban
 Content-Type: application/json
 
 {
   "unban": true
 }
 ###
-# Autorizar un usuario
-POST http://localhost:3000/users/30/authorize
+
+###
+POST http://localhost:3000/api/posts
 Content-Type: application/json
 
 {
-  
-  action: "viewPost" 
+  "title": "My First PoFFst",
+  "content": "This is the conFent of my first post",
+  "authorId": 4
 }
-###
-POST http://localhost:3000/posts
+
+
+###Ver los posts
+GET http://localhost:3000/api/posts/
+Content-Type: application/json
+
+### Ver un post por ID
+GET http://localhost:3000/api/posts/7
+Content-Type: application/json
+
+### Actualizar un post 
+PUT http://localhost:3000/api/posts/7
 Content-Type: application/json
 
 {
   "title": "My First Post",
-  "content": "This is the content of my first post",
-  "authorId": 20
+  "content": "This is the content of my first post"
+}
+### 
+### Obtener información del usuario
+GET http://localhost:3000/api/likes
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6NSwicm9sZSI6ImFkbWluIiwiaWF0IjoxNzMyNzAxODA2LCJleHAiOjE3MzI3MDU0MDZ9.Dt_rGg2wf2zcGNWvdIOx-sVh7wPkuDT-BvwdvK80uUo
+Content-Type: application/json
+
+### Crear un nuevo like
+POST http://localhost:3000/api/likes
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6NSwicm9sZSI6ImFkbWluIiwiaWF0IjoxNzMyNzAxODA2LCJleHAiOjE3MzI3MDU0MDZ9.Dt_rGg2wf2zcGNWvdIOx-sVh7wPkuDT-BvwdvK80uUo
+Content-Type: application/json
+
+{
+  "postId": 10
 }
 
-###
-curl -X POST http://localhost:3000/auth/login \
-     -H "Content-Type: application/json" \
-     -d '{
-           "email": "leoylu@example.com",
-           "password": "12345"
-         }'
+### Eliminar un like
+DELETE http://localhost:3000/api/likes
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6NSwicm9sZSI6ImFkbWluIiwiaWF0IjoxNzMyNzAxODA2LCJleHAiOjE3MzI3MDU0MDZ9.Dt_rGg2wf2zcGNWvdIOx-sVh7wPkuDT-BvwdvK80uUo
+Content-Type: application/json
+
+{
+  "postId": 10
+}
+
+### Contar likes de un post
+GET http://localhost:3000/api/likes/1/count
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6NSwicm9sZSI6ImFkbWluIiwiaWF0IjoxNzMyNzAxODA2LCJleHAiOjE3MzI3MDU0MDZ9.Dt_rGg2wf2zcGNWvdIOx-sVh7wPkuDT-BvwdvK80uUo
+Content-Type: application/json
+
+
+
 
 
 

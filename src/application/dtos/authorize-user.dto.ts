@@ -11,4 +11,5 @@ constructor(userId: number, userRole: Role, action: string) {
     this.userRole = userRole;
     this.action = action;
 }
+
 }

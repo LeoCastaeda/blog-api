@@ -3,6 +3,16 @@ import { Like } from '../../domain/entities/Like';
 import prisma from '../database/prismaClient';
 
 export class LikeRepository implements ILikeRepository {
+  async findByUserIdAndPostId(_userId: number, _postId: number): Promise<Like | null> {
+    const like = await prisma.like.findFirst({
+      where: {
+        userId: _userId,
+        postId: _postId,
+        deleted: false
+      }
+    });
+    return like ? Like.with(like) : null;
+  }
   async findById(id: number): Promise<Like | null> {
     const like = await prisma.like.findUnique({
       where: { 

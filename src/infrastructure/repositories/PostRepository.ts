@@ -45,15 +45,21 @@ export class PostRepository implements IPostRepository {
         });
     }
 
-    async update(post: Post): Promise<void> {
-        await prisma.post.update({
-            where: { id: post.id },
-            data: {
-                title: post.title,
-                content: post.content,
-                updatedAt: new Date(),
-            },
-        });
+    async update(post: Post): Promise<boolean> {
+        try {
+            const updatedPost = await prisma.post.update({
+                where: { id: post.id },
+                data: {
+                    title: post.title,
+                    content: post.content,
+                    updatedAt: new Date(),
+                }
+            });
+            return true
+        } catch (error) {
+            return false;
+        }
+         
     }
 
     async delete(id: number): Promise<boolean> {

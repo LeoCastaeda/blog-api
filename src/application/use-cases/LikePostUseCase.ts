@@ -1,11 +1,10 @@
 import { LikePostDto } from '../dtos/like-post.dto';
-import { PostService } from '../services/postService';
+import { LikeService } from '../services/LikeService';
 
 export class LikePostUseCase {
-  constructor(private postService: PostService) {}
+  constructor(private likeService: LikeService) {}
 
   async execute(dto: LikePostDto): Promise<void> {
-    const { postId, userId } = dto;
-    return this.postService.likePost(postId, userId);
+    await this.likeService.addLike(dto);
   }
 }

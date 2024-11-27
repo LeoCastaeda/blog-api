@@ -9,6 +9,7 @@ export interface ILikeRepository {
   countByPostId(postId: number): Promise<number>; 
   countByUserId(userId: number): Promise<number>;
   findAll(): Promise<Like[]>;
+  findByUserIdAndPostId(userId: number, postId: number): Promise<Like | null>;
 }
 
 export default ILikeRepository;

@@ -5,6 +5,6 @@ export interface TokenPayload {
 
 export interface ITokenService {
     generateToken(payload: TokenPayload): string;
-    verifyToken(token: string): object | null;
+    verifyToken(token: string): TokenPayload | null;
   }
   
