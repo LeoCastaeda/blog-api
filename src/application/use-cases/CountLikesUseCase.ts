@@ -1,10 +1,10 @@
-import { PostService } from '../services/postService';
+import { LikeService } from '../services/LikeService';
 import { CountLikesDto } from '../dtos/count-likes.dto';
 
 export class CountLikesUseCase {
-  constructor(private postService: PostService) {}
+  constructor(private likeService: LikeService) {}
 
   async execute(dto: CountLikesDto): Promise<number> {
-    return this.postService.countLikes(dto.postId);
+    return this.likeService.countLikesByPost(dto);
   }
 }

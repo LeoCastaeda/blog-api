@@ -1,7 +1,7 @@
 import bcrypt from 'bcrypt';
 import { IUserRepository } from '../../domain/repositories/IUserRepository';
-import { User, Role, UserProps } from '../../domain/entities/User';
-import tokenService from './tokenService';
+import { Role, UserProps } from '../../domain/entities/User';
+
 
 export class UserService {
   constructor(private userRepository: IUserRepository) {}
@@ -49,7 +49,7 @@ export class UserService {
   }
 
   // Banear un usuario
-  async banUser(userId: number) {
+  async banUser(userId: number, p0: { banned: boolean; }) {
     return this.userRepository.banUser(userId);
   }
 

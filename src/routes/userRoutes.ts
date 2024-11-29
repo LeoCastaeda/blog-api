@@ -1,28 +1,23 @@
 import { Router } from "express";
 import { UserController } from "../infrastructure/controllers/UserController";
 import { UserService } from "../application/services/userService";
-import { BanUserUseCase } from "../application/use-cases/BanUserUseCase";
-import { AuthorizeUserUseCase } from "../application/use-cases/AuthorizeUserUseCase";
 import { UserRepository } from "../infrastructure/repositories/UserRepository";
+import { authenticateJWT } from '../infrastructure/middlewares/authenticateJWT';
+import authorizationMiddleware from '../infrastructure/middlewares/authorizeMiddleware';
 
 const userRoutes = Router();
 
 // Crear instancias de las dependencias
 const userRepository = new UserRepository();
 const userService = new UserService(userRepository);
-const banUserUseCase = new BanUserUseCase(userService);
-const authorizeUserUseCase = new AuthorizeUserUseCase();
-const userController = new UserController(userService, banUserUseCase, authorizeUserUseCase);
+const userController = new UserController(userService);
 
-userRoutes.get("/", (req, res) => userController.getAllUsers(req, res));
+userRoutes.get("/", authenticateJWT, authorizationMiddleware('read_all_users'), (req, res) => userController.getAllUsers(req, res));
+userRoutes.get("/:id", authenticateJWT, authorizationMiddleware('read_user'), (req, res) => userController.getUserById(req, res));
+userRoutes.put("/:id", authenticateJWT, authorizationMiddleware('update_own_profile'), (req, res) => userController.updateUser(req, res));
+userRoutes.delete("/:id", authenticateJWT, authorizationMiddleware('delete_user'), (req, res) => userController.deleteUser(req, res));
+userRoutes.post("/:id/ban", authenticateJWT, authorizationMiddleware('ban_user'), (req, res) => userController.banUser(req, res));
+userRoutes.post("/:id/unban", authenticateJWT, authorizationMiddleware('unban_user'), (req, res) => userController.unbanUser(req, res));
 
-// Definir las rutas
-
-userRoutes.get("/:id", (req, res) => userController.getUserById(req, res));
-userRoutes.put("/:id", (req, res) => userController.updateUser(req, res));
-userRoutes.delete("/:id", (req, res) => userController.deleteUser(req, res));
-userRoutes.post("/:id/ban", (req, res) => userController.banUser(req, res));
-userRoutes.post("/:id/unban", (req, res) => userController.unbanUser(req, res));
-userRoutes.post("/:id/authorize", (req, res, next) => userController.authorizeUser(req, res, next));
 
 export default userRoutes;

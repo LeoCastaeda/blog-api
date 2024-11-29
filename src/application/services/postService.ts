@@ -1,9 +1,12 @@
-
 import { Post } from '../../domain/entities/Post';
 import { IPostRepository } from '../../domain/repositories/IPostRepository';
+import { PostActionDto } from '../dtos/postAction.dto';
 
 export class PostService {
-  constructor(private postRepository: IPostRepository) {}
+  constructor(
+    private readonly postRepository: IPostRepository,
+   
+  ) {}
 
   async createPost(title: string, content: string, authorId: number): Promise<Post> {
     const post = Post.create(title, content, authorId);
@@ -24,21 +27,62 @@ export class PostService {
     return true;
   }
 
-  async deletePost(id: number): Promise<boolean> {
-    return this.postRepository.delete(id);
-  }
-
-  async countLikes(postId: number): Promise<number> {
-    return this.postRepository.countLikes(postId);
-  }
-
-  async likePost(postId: number, userId: number): Promise<void> {
-    return this.postRepository.likePost(postId, userId);
-  }
-
   async getUserPosts(userId: number): Promise<Post[]> {
     return this.postRepository.findUserPosts(userId);
   }
+
+  async deletePost(dto: PostActionDto): Promise<void> {
+    PostActionDto.validate(dto);
+
+    const post = await this.postRepository.findByIdIncludingDeleted(dto.postId);
+
+    if (!post) {
+      throw new Error("Post not found");
+    }
+
+    if (post.authorId !== dto.userId) {
+      throw new Error("You can only delete your own posts");
+    }
+
+    if (post.deleted) {
+      throw new Error("Post is already deleted");
+    }
+
+    await this.postRepository.softDelete(dto.postId);
+  }
+
+  async recoverPost(dto: PostActionDto): Promise<void> {
+    PostActionDto.validate(dto);
+
+    const post = await this.postRepository.findByIdIncludingDeleted(dto.postId);
+
+    if (!post) {
+      throw new Error("Post not found");
+    }
+
+    if (post.authorId !== dto.userId) {
+      throw new Error("You can only recover your own posts");
+    }
+
+    if (!post.deleted) {
+      throw new Error("Post is not deleted");
+    }
+
+    await this.postRepository.recover(dto.postId);
+  }
+  async getPostsWithDetails(): Promise<any[]> {
+    const posts = await this.postRepository.findAllWithDetails();
+
+    return posts.map(post => {
+      const enrichedPost = Post.with(post); // Crea una instancia enriquecida de Post
+    const popularity = enrichedPost.calculatePopularity(post.totalUsers, post.likes);
+
+    return enrichedPost.enrichDetails(post.author, popularity);
+  });
+}
+
 }
 
 export default PostService;
+
+ 

@@ -2,8 +2,8 @@ import { Role } from "../../domain/entities/Role";
 import { AuthorizeUserDto } from "../dtos/authorize-user.dto";
 
 const permissions: Record<Role, string[]> = {
-  [Role.Admin]: ["create", "read", "update", "delete"],
-  [Role.SimpleUser]: ["read"],
+  [Role.Admin]: ["create_post", "popular_post","read_post", "read_all_users", "read_user", "update_post", "delete_post", "ban_user", "unban_user", "delete_user", "recover_post","like_post","dislike_post"],
+  [Role.SimpleUser]: ["create_post", "popular_post", "read_post", "update_own_post", "delete_post", "recover_post", "read_own_post", "update_own_profile","like_post","dislike_post"],
 };
 
 export class AuthorizeUserUseCase {

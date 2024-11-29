@@ -11,7 +11,7 @@ export class BanUserUseCase {
       return;
     } else {
       // Banear al usuario
-      await this.userService.banUser(dto.userId);
+      await this.userService.banUser(dto.userId, { banned: true });
       return;
 
     }

@@ -164,6 +164,9 @@ export class UserRepository implements IUserRepository {
       data: { email: newEmail },
     });
   }
+  async countUsers(): Promise<number> {
+    return await prisma.user.count();
+  }
 }
 
 

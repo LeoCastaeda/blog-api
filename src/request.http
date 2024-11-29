@@ -2,8 +2,8 @@ POST http://localhost:3000/auth/register
 Content-Type: application/json
 
 {
-  "username": "Nicolas",
-  "email": "nico@example.com",
+  "username": "Ni",
+  "email": "ni@example.com",
   "password": "12345",
   "role": "admin"
 }
@@ -12,7 +12,7 @@ POST http://localhost:3000/auth/login
 Content-Type: application/json
 
 {
-   "email": "nico@example.com",
+   "email": "ni@example.com",
   "password": "12345"
 }
 ###
@@ -24,19 +24,21 @@ Content-Type: application/json
  "token":  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MjMsInJvbGUiOiJVc2VyIiwiaWF0IjoxNzMyNDA3NTU5LCJleHAiOjE3MzI0MTExNTl9.Av45MJC-ovfSH7qXTaIl0IrUO52AP8NflXCdGhYyd00"
 }
 ### Obtener todos los usuarios  
- GET http://localhost:3000/users
- Content-Type: application/json
+GET http://localhost:3000/users
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6Niwicm9sZSI6InNpbXBsZVVzZXIiLCJpYXQiOjE3MzI3NTExMjcsImV4cCI6MTczMjc1NDcyN30.rGeF8gtywqpnuUpmH0SmWZ9FUVK_E2PBl9Blw6QBQrI
+Content-Type: application/json
 
 ### Obtener por id
 GET http://localhost:3000/users/1
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6Niwicm9sZSI6InNpbXBsZVVzZXIiLCJpYXQiOjE3MzI3NjIwNDcsImV4cCI6MTczMjc2NTY0N30.yoTgqgzwbUQ10bdHCOpv-Fa8MZSon0-4QafniH_29i8
 
 ### Obtener otro usuario por ID
-GET http://localhost:3000/users/8
-
+GET http://localhost:3000/users/5
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6Niwicm9sZSI6InNpbXBsZVVzZXIiLCJpYXQiOjE3MzI3NjIwNDcsImV4cCI6MTczMjc2NTY0N30.yoTgqgzwbUQ10bdHCOpv-Fa8MZSon0-4QafniH_29i8
 
 ###
-PUT http://localhost:3000/users/1
-Content-Type: application/json
+PUT http://localhost:3000/users/5
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6Nywicm9sZSI6ImFkbWluIiwiaWF0IjoxNzMyNzYyMjg4LCJleHAiOjE3MzI3NjU4ODh9.UaL99pH3U3g6RKvhlhtvIf1bzjc-XwCPP5nJ-VTbta4  
 
 {
     "username": "newUsrrruurername",
@@ -46,36 +48,29 @@ Content-Type: application/json
 ###
 DELETE http://localhost:3000/users/2
 
-### Obtener todos los usuarios
-POST http://localhost:3000/users/1/ban
+### banear un usuario
+POST http://localhost:3000/users/3/ban
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6Nywicm9sZSI6ImFkbWluIiwiaWF0IjoxNzMyNzYyMjg4LCJleHAiOjE3MzI3NjU4ODh9.UaL99pH3U3g6RKvhlhtvIf1bzjc-XwCPP5nJ-VTbta4
 Content-Type: application/json
 
 {
+  "unban": true
 }
 ###
 POST http://localhost:3000/users/1/unban
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6Nywicm9sZSI6ImFkbWluIiwiaWF0IjoxNzMyNzYyMjg4LCJleHAiOjE3MzI3NjU4ODh9.UaL99pH3U3g6RKvhlhtvIf1bzjc-XwCPP5nJ-VTbta4
 Content-Type: application/json
 
 {
+  "unban": true
 }
-###
-POST http://localhost:3000/users/30/authorize
-Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6Mywicm9sZSI6InNpbXBsZVVzZXIiLCJpYXQiOjE3MzI1ODU0OTYsImV4cCI6MTczMjU4OTA5Nn0.IUC0JEt40Eb9xYLycx6cYXfA9R-kgc8ZmPphYipEWac
+ 
 
-{
-  "action": "read"
-}
-###
-POST http://localhost:3000/users/1/unban
-//Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6NCwicm9sZSI6ImFkbWluIiwiaWF0IjoxNzMyNTg1NzE4LCJleHAiOjE3MzI1ODkzMTh9.CkgWyOAAYO6wRwjMHTmL6umHJ4-xrQmU6IQ-gP86Av8
-
-###
-GET http://localhost:3000/api/users/1/authorize
 
 ###
 # Banear un usuario
 POST http://localhost:3000/users/1/ban
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6NSwicm9sZSI6ImFkbWluIiwiaWF0IjoxNzMyNzQ3ODU0LCJleHAiOjE3MzI3NTE0NTR9.B35ypyKuBBqAMqTulblFgFFj7PncSmTl-z2HGJP1lMc
 Content-Type: application/json
 
 {
@@ -84,6 +79,7 @@ Content-Type: application/json
 ###
 # Desbanear un usuario
 POST http://localhost:3000/users/1/unban
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6NSwicm9sZSI6ImFkbWluIiwiaWF0IjoxNzMyNzQ3ODU0LCJleHAiOjE3MzI3NTE0NTR9.B35ypyKuBBqAMqTulblFgFFj7PncSmTl-z2HGJP1lMc
 Content-Type: application/json
 
 {
@@ -91,61 +87,95 @@ Content-Type: application/json
 }
 ###
 
-###
+### Crear un nuevo post
 POST http://localhost:3000/api/posts
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6Nywicm9sZSI6ImFkbWluIiwiaWF0IjoxNzMyNzg3MzQ3LCJleHAiOjE3MzI3OTA5NDd9.sfo-t8WGcwRowxa-FiAYsg_X7a77mVLCTewScaJSdz4
 Content-Type: application/json
 
 {
-  "title": "My First PoFFst",
-  "content": "This is the conFent of my first post",
-  "authorId": 4
+  "title": "My First Post",
+  "content": "This is the content of my first post",
+  "authorId": 7
 }
 
 
+###
 ###Ver los posts
 GET http://localhost:3000/api/posts/
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6Nywicm9sZSI6ImFkbWluIiwiaWF0IjoxNzMyNzg1MzM2LCJleHAiOjE3MzI3ODg5MzZ9.NAIWgey5AbQvid2LOk_I3EW7HV-IkP7GnJJwKAYg3EE
 Content-Type: application/json
 
 ### Ver un post por ID
-GET http://localhost:3000/api/posts/7
+GET http://localhost:3000/api/posts/32
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6Nywicm9sZSI6ImFkbWluIiwiaWF0IjoxNzMyNzg3MzQ3LCJleHAiOjE3MzI3OTA5NDd9.sfo-t8WGcwRowxa-FiAYsg_X7a77mVLCTewScaJSdz4
 Content-Type: application/json
 
 ### Actualizar un post 
 PUT http://localhost:3000/api/posts/7
+Authorization: Bearer  eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6Nywicm9sZSI6ImFkbWluIiwiaWF0IjoxNzMyNzg1MzM2LCJleHAiOjE3MzI3ODg5MzZ9.NAIWgey5AbQvid2LOk_I3EW7HV-IkP7GnJJwKAYg3EE
 Content-Type: application/json
 
 {
   "title": "My First Post",
   "content": "This is the content of my first post"
 }
-### 
-### Obtener información del usuario
-GET http://localhost:3000/api/likes
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6NSwicm9sZSI6ImFkbWluIiwiaWF0IjoxNzMyNzAxODA2LCJleHAiOjE3MzI3MDU0MDZ9.Dt_rGg2wf2zcGNWvdIOx-sVh7wPkuDT-BvwdvK80uUo
-Content-Type: application/json
 
 ### Crear un nuevo like
 POST http://localhost:3000/api/likes
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6NSwicm9sZSI6ImFkbWluIiwiaWF0IjoxNzMyNzAxODA2LCJleHAiOjE3MzI3MDU0MDZ9.Dt_rGg2wf2zcGNWvdIOx-sVh7wPkuDT-BvwdvK80uUo
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6Nywicm9sZSI6ImFkbWluIiwiaWF0IjoxNzMyODM2MDAyLCJleHAiOjE3MzI4Mzk2MDJ9.QJOIYPPlLoP7Ie87f1yeWwHhih1pGN30sgs9g5mBWzc
 Content-Type: application/json
 
 {
-  "postId": 10
+  "postId": 13
 }
 
 ### Eliminar un like
 DELETE http://localhost:3000/api/likes
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6NSwicm9sZSI6ImFkbWluIiwiaWF0IjoxNzMyNzAxODA2LCJleHAiOjE3MzI3MDU0MDZ9.Dt_rGg2wf2zcGNWvdIOx-sVh7wPkuDT-BvwdvK80uUo
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6NSwicm9sZSI6ImFkbWluIiwiaWF0IjoxNzMyNzQ3ODU0LCJleHAiOjE3MzI3NTE0NTR9.B35ypyKuBBqAMqTulblFgFFj7PncSmTl-z2HGJP1lMc
 Content-Type: application/json
 
 {
-  "postId": 10
+  "postId": 13
 }
 
 ### Contar likes de un post
-GET http://localhost:3000/api/likes/1/count
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6NSwicm9sZSI6ImFkbWluIiwiaWF0IjoxNzMyNzAxODA2LCJleHAiOjE3MzI3MDU0MDZ9.Dt_rGg2wf2zcGNWvdIOx-sVh7wPkuDT-BvwdvK80uUo
+GET http://localhost:3000/api/likes/13/count
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6Nywicm9sZSI6ImFkbWluIiwiaWF0IjoxNzMyODM2MDAyLCJleHAiOjE3MzI4Mzk2MDJ9.QJOIYPPlLoP7Ie87f1yeWwHhih1pGN30sgs9g5mBWzc 
 Content-Type: application/json
+
+### Eliminar un post
+DELETE http://localhost:3000/api/posts/32
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6Nywicm9sZSI6ImFkbWluIiwiaWF0IjoxNzMyODM2MDAyLCJleHAiOjE3MzI4Mzk2MDJ9.QJOIYPPlLoP7Ie87f1yeWwHhih1pGN30sgs9g5mBWzc
+Content-Type: application/json
+
+### recuperar un post
+POST http://localhost:3000/api/posts/32/recover
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6Nywicm9sZSI6ImFkbWluIiwiaWF0IjoxNzMyODM2MDAyLCJleHAiOjE3MzI4Mzk2MDJ9.QJOIYPPlLoP7Ie87f1yeWwHhih1pGN30sgs9g5mBWzc
+Content-Type: application/json
+
+### post details
+GET http://localhost:3000/api/posts/details
+Authorization : Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6Nywicm9sZSI6ImFkbWluIiwiaWF0IjoxNzMyODQyMjg1LCJleHAiOjE3MzI4NDU4ODV9.9qqRNXVCQbsyQ0Ba0NWPV8vatIdumCfR9SHhESlvwb8
+Content-Type: application/json
+
+### post details
+GET http://localhost:3000/api/posts/localhost:3000/api/posts/details
+Content-Type: application/json 
+
+
+ 
+ 
+
+
+
+ 
+
+
+ 
+
+
+
+ 
 
 
 

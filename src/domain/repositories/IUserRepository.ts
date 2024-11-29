@@ -13,5 +13,6 @@ export interface IUserRepository {
   banUser(userId: number): Promise<void>;
   unbanUser(userId: number): Promise<void>;
   updateEmail(userId: number, newEmail: string): Promise<void>;
+  countUsers(): Promise<number>;
 }
 export default IUserRepository;

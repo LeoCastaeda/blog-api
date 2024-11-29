@@ -6,6 +6,7 @@ export type PostProps = {
     createdAt: Date;
     updatedAt: Date;
     deleted: boolean;
+    likes?: number;
   }
   
   export class Post {
@@ -79,5 +80,22 @@ export type PostProps = {
     public unDelete() {
       this.props.deleted = false;
       this.props.updatedAt = new Date();
+    }
+  
+    public calculatePopularity(totalUsers: number, totalLikes: number): number {
+      if (totalUsers <= 1) return 0; // Evita divisiones por 0
+      return Number(((totalLikes / (totalUsers - 1)) * 100).toFixed(2));
+    }
+  
+    public enrichDetails(authorName: string, popularity: number): Record<string, any> {
+      return {
+        id: this.props.id,
+        title: this.props.title,
+        content: this.props.content,
+        author: authorName,
+        popularity,
+        createdAt: this.props.createdAt,
+        updatedAt: this.props.updatedAt,
+      };
     }
   }

@@ -53,12 +53,13 @@ export class LikeRepository implements ILikeRepository {
   }
 
   async countByUserId(userId: number): Promise<number> {
-    return await prisma.like.count({
+    const count = await prisma.like.count({
       where: { 
         userId, 
         deleted: false 
       }
     });
+    return count
   }
 
   async save(like: Like): Promise<Like> {
@@ -92,3 +93,5 @@ export class LikeRepository implements ILikeRepository {
     return likes.map(like => Like.with(like));
   }
 }
+
+export default LikeRepository;

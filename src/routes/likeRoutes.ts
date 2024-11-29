@@ -16,7 +16,7 @@ const likeController = new LikeController(likeService);
 likeRouter.post(
   '/',
   authenticateJWT, // Verifica autenticación
-  authorizationMiddleware('create'), // Verifica autorización
+  authorizationMiddleware('like_post'), // Verifica autorización
   (req, res) => likeController.createLike(req, res)
 );
 
@@ -24,15 +24,15 @@ likeRouter.post(
 likeRouter.delete(
   '/',
   authenticateJWT, // Verifica autenticación
-  authorizationMiddleware('delete'), // Verifica autorización
+  authorizationMiddleware('dislike_post'), // Verifica autorización
   (req, res) => likeController.removeLike(req, res)
 );
 
 // Ruta para contar "likes" de un post
 likeRouter.get(
   '/:postId/count',
-  authenticateJWT, // Verifica autenticación
-  authorizationMiddleware('read'), // Verifica autorización
+  authenticateJWT, 
+  authorizationMiddleware('like_post'), 
   (req, res) => likeController.countLikes(req, res)
 );
 
