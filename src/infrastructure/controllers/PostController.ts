@@ -1,186 +1,151 @@
 import { Request, Response } from "express";
 import { PostService } from "../../application/services/postService";
 import { PostActionDto } from "../../application/dtos/postAction.dto";
-import { body, param, validationResult } from "express-validator";
 
 export class PostController {
-  constructor(private postService: PostService) {}
+  constructor(private readonly postService: PostService) {}
 
+  /**
+   * Crear un nuevo post
+   */
   async createPost(req: Request, res: Response): Promise<void> {
-    await body("title").isString().notEmpty().run(req);
-    await body("content").isString().notEmpty().run(req);
-    await body("authorId").isInt().run(req);
-
-    const errors = validationResult(req);
-    if (!errors.isEmpty()) {
-      res.status(422).json({ errors: errors.array() });
-      return;
-    }
-
     try {
       const { title, content, authorId } = req.body;
       const post = await this.postService.createPost(title, content, authorId);
       res.status(201).json(post);
     } catch (error) {
-      res
-        .status(500)
-        .json({
-          error: error instanceof Error ? error.message : "Unknown error",
-        });
+      res.status(500).json({
+        error: error instanceof Error ? error.message : "Error al crear el post",
+      });
     }
   }
 
-  async getPostById(req: Request, res: Response): Promise<void> {
-    await param("id").isInt().run(req);
-
-    const errors = validationResult(req);
-    if (!errors.isEmpty()) {
-      res.status(422).json({ errors: errors.array() });
-      return;
-    }
-
+  /**
+   * Obtener un post por ID
+   */  async getPostById(req: Request, res: Response): Promise<void> {
     try {
       const { id } = req.params;
+      
       const post = await this.postService.getPostById(Number(id));
-      if (post !== null) {
-        res.status(200).json(post);
-      } else {
-        res.status(404).json({ error: "Post not found" });
+      
+  
+      if (!post) {
+        res.status(404).json({ message: "Post no encontrado" });
+        return;
       }
+  
+      res.status(200).json(post);
     } catch (error) {
-      res
-        .status(500)
-        .json({
-          error: error instanceof Error ? error.message : "Unknown error",
-        });
+      
+      res.status(500).json({
+        error: error instanceof Error ? error.message : "Error al obtener el post",
+      });
     }
   }
+
+  /**
+   * Obtener todos los posts
+   */
+  async getAllPosts(req: Request, res: Response): Promise<void> {
+    try {
+      const posts = await this.postService.getAllPosts();
+      res.status(200).json(posts);
+    } catch (error) {
+      res.status(500).json({
+        error: error instanceof Error ? error.message : "Error al obtener los posts",
+      });
+    }
+  }
+
+  /**
+   * Actualizar un post
+   */
+  async updatePost(req: Request, res: Response): Promise<void> {
+    try {
+      const { id } = req.params;
+      const { title, content } = req.body;
+
+      const post = await this.postService.getPostById(Number(id));
+
+      if (!post) {
+        res.status(404).json({ message: "Post no encontrado" });
+        return;
+      }
+
+      if (title) post.updateTitle(title);
+      if (content) post.updateContent(content);
+
+      await this.postService.updatePost(post);
+
+      res.status(200).json({ message: "Post actualizado exitosamente", post });
+    } catch (error) {
+      res.status(500).json({
+        error: error instanceof Error ? error.message : "Error al actualizar el post",
+      });
+    }
+  }
+
+  /**
+   * Eliminar un post (soft delete)
+   */
   async softDeletePost(req: Request, res: Response): Promise<void> {
     try {
       const postId = Number(req.params.id);
       const userId = req.user?.id;
 
-      if (isNaN(postId)) {
-        res.status(400).json({ message: "Invalid post ID" });
-        return;
-      }
-
       if (!userId) {
-        res.status(401).json({ message: "User not authenticated" });
+        res.status(401).json({ message: "Usuario no autenticado" });
         return;
       }
 
       const dto = new PostActionDto(postId, Number(userId));
       await this.postService.deletePost(dto);
 
-      res.status(200).json({ message: "Post soft deleted successfully" });
+      res.status(200).json({ message: "Post eliminado exitosamente" });
     } catch (error) {
-      if (error instanceof Error) {
-        if (error.message === "Post not found") {
-          res.status(404).json({ message: "Post not found" });
-        } else if (error.message === "You can only delete your own posts") {
-          res.status(403).json({ message: error.message });
-        } else {
-          res.status(500).json({ message: "Internal server error" });
-        }
-      } else {
-        res.status(500).json({ message: "Unknown error" });
-      }
+      res.status(500).json({
+        message: error instanceof Error ? error.message : "Error al eliminar el post",
+      });
     }
   }
 
-  // Recuperar una publicación eliminada
+  /**
+   * Recuperar un post eliminado
+   */
   async recoverPost(req: Request, res: Response): Promise<void> {
     try {
       const postId = Number(req.params.id);
       const userId = req.user?.id;
 
-      if (userId === undefined) {
-        res.status(400).json({ message: "User ID is required" });
+      if (!userId) {
+        res.status(401).json({ message: "Usuario no autenticado" });
         return;
       }
-      const dto = new PostActionDto(postId, Number(userId)); // Crear DTO
+
+      const dto = new PostActionDto(postId, userId);
       await this.postService.recoverPost(dto);
 
-      res.status(200).json({ message: "Post recovered successfully" });
+      res.status(200).json({ message: "Post recuperado exitosamente" });
     } catch (error) {
-      res
-        .status(400)
-        .json({
-          message: error instanceof Error ? error.message : "Unknown error",
-        });
+      res.status(500).json({
+        message: error instanceof Error
+          ? error.message
+          : "Error al recuperar el post",
+      });
     }
   }
 
-  async getAllPosts(req: Request, res: Response): Promise<void> {
-    try {
-      const posts = await this.postService.getAllPosts();
-      res.status(200).json(posts);
-    } catch (error) {
-      res
-        .status(500)
-        .json({
-          error: error instanceof Error ? error.message : "Unknown error",
-        });
-    }
-  }
-  async updatePost(req: Request, res: Response): Promise<void> {
-    // Validar los parámetros de entrada
-    await param("id").isInt().run(req);
-    await body("title").optional().isString().notEmpty().run(req);
-    await body("content").optional().isString().notEmpty().run(req);
-
-    // Comprobar errores de validación
-    const errors = validationResult(req);
-    if (!errors.isEmpty()) {
-      res.status(422).json({ errors: errors.array() });
-      return;
-    }
-
-    try {
-      const { id } = req.params;
-      const { title, content } = req.body;
-
-      // Obtener el post existente
-      const postToUpdate = await this.postService.getPostById(Number(id));
-      if (!postToUpdate) {
-        res.status(404).json({ message: "Post not found" });
-        return;
-      }
-
-      // Actualizar el título y contenido usando los métodos definidos en la clase Post
-      if (title) {
-        postToUpdate.updateTitle(title);
-      }
-      if (content) {
-        postToUpdate.updateContent(content);
-      }
-
-      // Llamar al servicio para actualizar el post en la base de datos
-      const updateSuccess = await this.postService.updatePost(postToUpdate);
-      if (updateSuccess) {
-        res
-          .status(200)
-          .json({ message: "Post updated successfully", post: postToUpdate });
-      } else {
-        res.status(500).json({ message: "Failed to update post" });
-      }
-    } catch (error) {
-      res
-        .status(500)
-        .json({
-          error: error instanceof Error ? error.message : "Unknown error",
-        });
-    }
-  }
+  /**
+   * Obtener posts con detalles adicionales
+   */
   async getPostsWithDetails(req: Request, res: Response): Promise<void> {
     try {
-      const posts = await this.postService.getPostsWithDetails(); 
-      res.status(200).json(posts); 
+      const posts = await this.postService.getPostsWithDetails();
+      res.status(200).json(posts);
     } catch (error) {
-      res.status(500).json({ message: "Internal server error" }); 
+      res.status(500).json({
+        error: error instanceof Error ? error.message : "Error al obtener los detalles",
+      });
     }
   }
-  
-  
 }

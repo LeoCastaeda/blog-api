@@ -7,19 +7,228 @@ import authorizationMiddleware from '../infrastructure/middlewares/authorizeMidd
 
 const postRouter = Router();
 
-
 const postRepository = new PostRepository();
 const postService = new PostService(postRepository);
 const postController = new PostController(postService);
 
+/**
+ * @swagger
+ * tags:
+ *   name: Posts
+ *   description: API for managing posts
+ */
 
-postRouter.post('/posts', authenticateJWT, authorizationMiddleware('create_post'), (req, res) => postController.createPost(req, res));
-postRouter.get('/posts/details', authenticateJWT, authorizationMiddleware('popular_post'), (req, res) => postController.getPostsWithDetails(req, res));
-postRouter.get('/posts/:id', authenticateJWT, authorizationMiddleware('read_post'), (req, res) => postController.getPostById(req, res));
-postRouter.delete('/posts/:id', authenticateJWT, authorizationMiddleware('delete_post'), (req, res) => postController.softDeletePost(req, res));
-postRouter.post('/posts/:id/recover', authenticateJWT, authorizationMiddleware('recover_post'), (req, res) => postController.recoverPost(req, res));
-postRouter.get('/posts', authenticateJWT, authorizationMiddleware('read_post'),  (req, res) => postController.getAllPosts(req, res));
-postRouter.put('/posts/:id', authenticateJWT, authorizationMiddleware('update_own_post'), (req, res) => postController.updatePost(req, res));
+/**
+ * @swagger
+ * /api/posts:
+ *   get:
+ *     summary: Get all posts
+ *     tags: [Posts]
+ *     security:
+ *       - bearerAuth: []
+ *     responses:
+ *       200:
+ *         description: List of posts
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
+ *               items:
+ *                 $ref: '#/components/schemas/Post'
+ */
+postRouter.get('/', authenticateJWT, authorizationMiddleware('read_post'), postController.getAllPosts.bind(postController));
 
+/**
+ * @swagger
+ * /api/posts/details:
+ *   get:
+ *     summary: Get posts with detailed information
+ *     tags: [Posts]
+ *     security:
+ *       - bearerAuth: []
+ *     responses:
+ *       200:
+ *         description: List of posts with details
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
+ *               items:
+ *                 $ref: '#/components/schemas/PostDetails'
+ */
+postRouter.get('/details', authenticateJWT, authorizationMiddleware('read_post'), postController.getPostsWithDetails.bind(postController));
+
+/**
+ * @swagger
+ * /api/posts/{id}:
+ *   get:
+ *     summary: Get a post by ID
+ *     tags: [Posts]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         schema:
+ *           type: string
+ *         required: true
+ *         description: The post ID
+ *     responses:
+ *       200:
+ *         description: The post data
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Post'
+ *       404:
+ *         description: Post not found
+ */
+postRouter.get('/:id', authenticateJWT, authorizationMiddleware('read_post'), postController.getPostById.bind(postController));
+
+/**
+ * @swagger
+ * /api/posts:
+ *   post:
+ *     summary: Create a new post
+ *     tags: [Posts]
+ *     security:
+ *       - bearerAuth: []
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             $ref: '#/components/schemas/PostInput'
+ *     responses:
+ *       201:
+ *         description: Post created successfully
+ */
+postRouter.post('/', authenticateJWT, authorizationMiddleware('create_post'), postController.createPost.bind(postController));
+
+/**
+ * @swagger
+ * /api/posts/{id}:
+ *   put:
+ *     summary: Update a post
+ *     tags: [Posts]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         schema:
+ *           type: string
+ *         required: true
+ *         description: The post ID
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             $ref: '#/components/schemas/PostInput'
+ *     responses:
+ *       200:
+ *         description: Post updated successfully
+ */
+postRouter.put('/:id', authenticateJWT, authorizationMiddleware('update_own_post'), postController.updatePost.bind(postController));
+
+/**
+ * @swagger
+ * /api/posts/{id}:
+ *   delete:
+ *     summary: Soft delete a post
+ *     tags: [Posts]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         schema:
+ *           type: string
+ *         required: true
+ *         description: The post ID
+ *     responses:
+ *       200:
+ *         description: Post deleted successfully
+ */
+postRouter.delete('/:id', authenticateJWT, authorizationMiddleware('delete_post'), postController.softDeletePost.bind(postController));
+
+/**
+ * @swagger
+ * /api/posts/{id}/recover:
+ *   post:
+ *     summary: Recover a soft-deleted post
+ *     tags: [Posts]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         schema:
+ *           type: string
+ *         required: true
+ *         description: The post ID
+ *     responses:
+ *       200:
+ *         description: Post recovered successfully
+ */
+postRouter.post('/:id/recover', authenticateJWT, authorizationMiddleware('recover_post'), postController.recoverPost.bind(postController));
 
 export default postRouter;
+
+/**
+ * @swagger
+ * components:
+ *   schemas:
+ *     Post:
+ *       type: object
+ *       properties:
+ *         id:
+ *           type: string
+ *           description: The post ID
+ *         title:
+ *           type: string
+ *           description: The post title
+ *         content:
+ *           type: string
+ *           description: The post content
+ *         createdAt:
+ *           type: string
+ *           format: date-time
+ *           description: When the post was created
+ *         updatedAt:
+ *           type: string
+ *           format: date-time
+ *           description: When the post was last updated
+ *     PostInput:
+ *       type: object
+ *       required:
+ *         - title
+ *         - content
+ *       properties:
+ *         title:
+ *           type: string
+ *           description: The title of the post
+ *         content:
+ *           type: string
+ *           description: The content of the post
+ *     PostDetails:
+ *       type: object
+ *       allOf:
+ *         - $ref: '#/components/schemas/Post'
+ *       properties:
+ *         author:
+ *           type: string
+ *           description: The author of the post
+ *         comments:
+ *           type: array
+ *           items:
+ *             type: object
+ *             properties:
+ *               id:
+ *                 type: string
+ *                 description: The comment ID
+ *               content:
+ *                 type: string
+ *                 description: The comment content
+ */

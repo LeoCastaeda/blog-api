@@ -1,166 +1,142 @@
-POST http://localhost:3000/auth/register
+### Auth - Registro de Usuario
+POST http://localhost:3000/api/auth/register 
 Content-Type: application/json
 
 {
-  "username": "Ni",
-  "email": "ni@example.com",
+  "username": "lul",
+  "email": "lul@example.com",
   "password": "12345",
   "role": "admin"
 }
-### 
-POST http://localhost:3000/auth/login
+
+### Auth - Inicio de Sesión
+POST http://localhost:3000/api/auth/login
 Content-Type: application/json
 
 {
-   "email": "ni@example.com",
+  "email": "lulu11_update@example.com",
   "password": "12345"
 }
-###
-### Logout user (placeholder token for testing)
-POST http://localhost:3000/auth/logout
+
+### Auth - Cerrar Sesión
+POST http://localhost:3000/api/auth/logout
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MzgyLCJyb2xlIjoiYWRtaW4iLCJpYXQiOjE3MzM1OTI1MDEsImV4cCI6MTczMzU5NjEwMX0.OsDmZRFvK9GcfVv4fnXJNy-SEkQ2fN5raG3mnntcqdk
+Content-Type: application/json
+
+### Usuarios - Obtener todos los usuarios
+GET http://localhost:3000/api/users
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MzgyLCJyb2xlIjoiYWRtaW4iLCJpYXQiOjE3MzM1OTI1MDEsImV4cCI6MTczMzU5NjEwMX0.OsDmZRFvK9GcfVv4fnXJNy-SEkQ2fN5raG3mnntcqdk
+Content-Type: application/json
+
+### Usuarios - Obtener usuario por ID
+GET http://localhost:3000/api/users/360
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MzgyLCJyb2xlIjoiYWRtaW4iLCJpYXQiOjE3MzM1OTI1MDEsImV4cCI6MTczMzU5NjEwMX0.OsDmZRFvK9GcfVv4fnXJNy-SEkQ2fN5raG3mnntcqdk
+Content-Type: application/json
+
+### Usuarios - Actualizar un usuario por ID
+PUT http://localhost:3000/api/users/382
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MzgyLCJyb2xlIjoiYWRtaW4iLCJpYXQiOjE3MzM1OTI2NDAsImV4cCI6MTczMzU5NjI0MH0.cO8RpiYxX_53PoByYRlwKwAKCLasIa6r9DdujnHSYRE
 Content-Type: application/json
 
 {
- "token":  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MjMsInJvbGUiOiJVc2VyIiwiaWF0IjoxNzMyNDA3NTU5LCJleHAiOjE3MzI0MTExNTl9.Av45MJC-ovfSH7qXTaIl0IrUO52AP8NflXCdGhYyd00"
+  "username": "lulu11_updated",
+  "email": "lulu11_updated@example.com"
 }
-### Obtener todos los usuarios  
-GET http://localhost:3000/users
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6Niwicm9sZSI6InNpbXBsZVVzZXIiLCJpYXQiOjE3MzI3NTExMjcsImV4cCI6MTczMjc1NDcyN30.rGeF8gtywqpnuUpmH0SmWZ9FUVK_E2PBl9Blw6QBQrI
+
+### Usuarios - Eliminar un usuario por ID
+DELETE http://localhost:3000/api/users/381
+Authorization: Bearer <YOUR_TOKEN>
 Content-Type: application/json
 
-### Obtener por id
-GET http://localhost:3000/users/1
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6Niwicm9sZSI6InNpbXBsZVVzZXIiLCJpYXQiOjE3MzI3NjIwNDcsImV4cCI6MTczMjc2NTY0N30.yoTgqgzwbUQ10bdHCOpv-Fa8MZSon0-4QafniH_29i8
-
-### Obtener otro usuario por ID
-GET http://localhost:3000/users/5
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6Niwicm9sZSI6InNpbXBsZVVzZXIiLCJpYXQiOjE3MzI3NjIwNDcsImV4cCI6MTczMjc2NTY0N30.yoTgqgzwbUQ10bdHCOpv-Fa8MZSon0-4QafniH_29i8
-
-###
-PUT http://localhost:3000/users/5
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6Nywicm9sZSI6ImFkbWluIiwiaWF0IjoxNzMyNzYyMjg4LCJleHAiOjE3MzI3NjU4ODh9.UaL99pH3U3g6RKvhlhtvIf1bzjc-XwCPP5nJ-VTbta4  
-
-{
-    "username": "newUsrrruurername",
-    "email": "newEmarrrruuil@example.com",
-    "role": "admin"
-}
-###
-DELETE http://localhost:3000/users/2
-
-### banear un usuario
-POST http://localhost:3000/users/3/ban
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6Nywicm9sZSI6ImFkbWluIiwiaWF0IjoxNzMyNzYyMjg4LCJleHAiOjE3MzI3NjU4ODh9.UaL99pH3U3g6RKvhlhtvIf1bzjc-XwCPP5nJ-VTbta4
+### Usuarios - Banear un usuario
+POST http://localhost:3000/api/users/366/ban
+Authorization: Bearer <YOUR_TOKEN>
 Content-Type: application/json
 
 {
-  "unban": true
+  "ban": true
 }
-###
-POST http://localhost:3000/users/1/unban
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6Nywicm9sZSI6ImFkbWluIiwiaWF0IjoxNzMyNzYyMjg4LCJleHAiOjE3MzI3NjU4ODh9.UaL99pH3U3g6RKvhlhtvIf1bzjc-XwCPP5nJ-VTbta4
-Content-Type: application/json
 
-{
-  "unban": true
-}
- 
-
-
-###
-# Banear un usuario
-POST http://localhost:3000/users/1/ban
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6NSwicm9sZSI6ImFkbWluIiwiaWF0IjoxNzMyNzQ3ODU0LCJleHAiOjE3MzI3NTE0NTR9.B35ypyKuBBqAMqTulblFgFFj7PncSmTl-z2HGJP1lMc
-Content-Type: application/json
-
-{
-  "unban": false
-}
-###
-# Desbanear un usuario
-POST http://localhost:3000/users/1/unban
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6NSwicm9sZSI6ImFkbWluIiwiaWF0IjoxNzMyNzQ3ODU0LCJleHAiOjE3MzI3NTE0NTR9.B35ypyKuBBqAMqTulblFgFFj7PncSmTl-z2HGJP1lMc
+### Usuarios - Desbanear un usuario
+POST http://localhost:3000/api/users/366/unban
+Authorization: Bearer <YOUR_TOKEN>
 Content-Type: application/json
 
 {
   "unban": true
 }
-###
 
-### Crear un nuevo post
+### Posts - Crear un nuevo post
 POST http://localhost:3000/api/posts
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6Nywicm9sZSI6ImFkbWluIiwiaWF0IjoxNzMyNzg3MzQ3LCJleHAiOjE3MzI3OTA5NDd9.sfo-t8WGcwRowxa-FiAYsg_X7a77mVLCTewScaJSdz4
+Authorization: Bearer <YOUR_TOKEN>
 Content-Type: application/json
 
 {
   "title": "My First Post",
   "content": "This is the content of my first post",
-  "authorId": 7
+  "authorId": 381
 }
 
-
-###
-###Ver los posts
-GET http://localhost:3000/api/posts/
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6Nywicm9sZSI6ImFkbWluIiwiaWF0IjoxNzMyNzg1MzM2LCJleHAiOjE3MzI3ODg5MzZ9.NAIWgey5AbQvid2LOk_I3EW7HV-IkP7GnJJwKAYg3EE
+### Posts - Ver todos los posts
+GET http://localhost:3000/api/posts
+Authorization: Bearer <YOUR_TOKEN>
 Content-Type: application/json
 
-### Ver un post por ID
-GET http://localhost:3000/api/posts/32
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6Nywicm9sZSI6ImFkbWluIiwiaWF0IjoxNzMyNzg3MzQ3LCJleHAiOjE3MzI3OTA5NDd9.sfo-t8WGcwRowxa-FiAYsg_X7a77mVLCTewScaJSdz4
+### Posts - Ver un post por ID
+GET http://localhost:3000/api/posts/40
+Authorization: Bearer <YOUR_TOKEN>
 Content-Type: application/json
 
-### Actualizar un post 
-PUT http://localhost:3000/api/posts/7
-Authorization: Bearer  eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6Nywicm9sZSI6ImFkbWluIiwiaWF0IjoxNzMyNzg1MzM2LCJleHAiOjE3MzI3ODg5MzZ9.NAIWgey5AbQvid2LOk_I3EW7HV-IkP7GnJJwKAYg3EE
+### Posts - Actualizar un post por ID
+PUT http://localhost:3000/api/posts/40
+Authorization: Bearer <YOUR_TOKEN>
 Content-Type: application/json
 
 {
-  "title": "My First Post",
-  "content": "This is the content of my first post"
+  "title": "Updated Post Title",
+  "content": "Updated content of the post"
 }
 
-### Crear un nuevo like
+### Posts - Eliminar un post por ID
+DELETE http://localhost:3000/api/posts/40
+Authorization: Bearer <YOUR_TOKEN>
+Content-Type: application/json
+
+### Posts - Recuperar un post eliminado
+POST http://localhost:3000/api/posts/40/recover
+Authorization: Bearer <YOUR_TOKEN>
+Content-Type: application/json
+
+### Likes - Crear un like
 POST http://localhost:3000/api/likes
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6Nywicm9sZSI6ImFkbWluIiwiaWF0IjoxNzMyODM2MDAyLCJleHAiOjE3MzI4Mzk2MDJ9.QJOIYPPlLoP7Ie87f1yeWwHhih1pGN30sgs9g5mBWzc
+Authorization: Bearer <YOUR_TOKEN>
 Content-Type: application/json
 
 {
-  "postId": 13
+  "postId": 44
 }
 
-### Eliminar un like
+### Likes - Eliminar un like
 DELETE http://localhost:3000/api/likes
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6NSwicm9sZSI6ImFkbWluIiwiaWF0IjoxNzMyNzQ3ODU0LCJleHAiOjE3MzI3NTE0NTR9.B35ypyKuBBqAMqTulblFgFFj7PncSmTl-z2HGJP1lMc
+Authorization: Bearer <YOUR_TOKEN>
 Content-Type: application/json
 
 {
-  "postId": 13
+  "postId": 44
 }
 
-### Contar likes de un post
-GET http://localhost:3000/api/likes/13/count
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6Nywicm9sZSI6ImFkbWluIiwiaWF0IjoxNzMyODM2MDAyLCJleHAiOjE3MzI4Mzk2MDJ9.QJOIYPPlLoP7Ie87f1yeWwHhih1pGN30sgs9g5mBWzc 
+### Likes - Contar likes de un post
+GET http://localhost:3000/api/likes/count/44
+Authorization: Bearer <YOUR_TOKEN>
 Content-Type: application/json
 
-### Eliminar un post
-DELETE http://localhost:3000/api/posts/32
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6Nywicm9sZSI6ImFkbWluIiwiaWF0IjoxNzMyODM2MDAyLCJleHAiOjE3MzI4Mzk2MDJ9.QJOIYPPlLoP7Ie87f1yeWwHhih1pGN30sgs9g5mBWzc
-Content-Type: application/json
-
-### recuperar un post
-POST http://localhost:3000/api/posts/32/recover
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6Nywicm9sZSI6ImFkbWluIiwiaWF0IjoxNzMyODM2MDAyLCJleHAiOjE3MzI4Mzk2MDJ9.QJOIYPPlLoP7Ie87f1yeWwHhih1pGN30sgs9g5mBWzc
-Content-Type: application/json
-
-### post details
+### Posts - Detalles adicionales de posts
 GET http://localhost:3000/api/posts/details
-Authorization : Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6Nywicm9sZSI6ImFkbWluIiwiaWF0IjoxNzMyODQyMjg1LCJleHAiOjE3MzI4NDU4ODV9.9qqRNXVCQbsyQ0Ba0NWPV8vatIdumCfR9SHhESlvwb8
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MzgyLCJyb2xlIjoiYWRtaW4iLCJpYXQiOjE3MzM1OTI2NDAsImV4cCI6MTczMzU5NjI0MH0.cO8RpiYxX_53PoByYRlwKwAKCLasIa6r9DdujnHSYRE
 Content-Type: application/json
 
-### post details
-GET http://localhost:3000/api/posts/localhost:3000/api/posts/details
-Content-Type: application/json 
+
+
 
 
  

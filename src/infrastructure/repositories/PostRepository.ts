@@ -3,17 +3,29 @@ import { Post } from "../../domain/entities/Post";
 import prisma from "../database/prismaClient";
 
 export class PostRepository implements IPostRepository {
-  async delete(id: number): Promise<boolean> {
-    try {
-      await prisma.post.delete({ where: { id } });
-      return true;
-    } catch (error) {
-      return false;
-    }
+ 
+  /**
+   * Crear un nuevo post.
+   */
+  async save(post: Post): Promise<void> {
+    await prisma.post.create({
+      data: {
+        title: post.title,
+        content: post.content,
+        authorId: post.authorId,
+        createdAt: post.createdAt || new Date(),
+        updatedAt: post.updatedAt || new Date(),
+      },
+    });
   }
 
+  /**
+   * Buscar un post por ID.
+   */
   async findById(id: number): Promise<Post | null> {
-    const post = await prisma.post.findUnique({ where: { id } });
+    const post = await prisma.post.findUnique({
+      where: { id },
+    });
     return post
       ? Post.with({
           id: post.id,
@@ -22,16 +34,19 @@ export class PostRepository implements IPostRepository {
           authorId: post.authorId,
           createdAt: post.createdAt,
           updatedAt: post.updatedAt,
-          deleted: post.deleted ?? false,
+          deleted: post.deleted || false,
         })
       : null;
   }
 
+  /**
+   * Buscar todos los posts no eliminados.
+   */
   async findAll(): Promise<Post[]> {
     const posts = await prisma.post.findMany({
       where: { deleted: false },
     });
-    return posts.map((post) =>
+    return posts.map(post =>
       Post.with({
         id: post.id,
         title: post.title,
@@ -44,25 +59,49 @@ export class PostRepository implements IPostRepository {
     );
   }
 
+  /**
+   * Buscar posts por un usuario específico.
+   */
+  async findUserPosts(userId: number): Promise<Post[]> {
+    const posts = await prisma.post.findMany({
+      where: { authorId: userId, deleted: false },
+    });
+    return posts.map(post =>
+      Post.with({
+        id: post.id,
+        title: post.title,
+        content: post.content,
+        authorId: post.authorId,
+        createdAt: post.createdAt,
+        updatedAt: post.updatedAt,
+        deleted: post.deleted,
+      })
+    );
+  }
+
+  /**
+   * Buscar un post, incluyendo los eliminados.
+   */
   async findByIdIncludingDeleted(id: number): Promise<Post | null> {
     const post = await prisma.post.findUnique({
       where: { id },
     });
-    return post ? Post.with(post) : null;
+    return post
+      ? Post.with({
+          id: post.id,
+          title: post.title,
+          content: post.content,
+          authorId: post.authorId,
+          createdAt: post.createdAt,
+          updatedAt: post.updatedAt,
+          deleted: post.deleted || false,
+        })
+      : null;
   }
 
-  async save(post: Post): Promise<void> {
-    await prisma.post.create({
-      data: {
-        title: post.title,
-        content: post.content,
-        authorId: post.authorId,
-        createdAt: post.createdAt ?? new Date(),
-        updatedAt: post.updatedAt ?? new Date(),
-      },
-    });
-  }
-
+  /**
+   * Actualizar un post existente.
+   */
   async update(post: Post): Promise<boolean> {
     try {
       await prisma.post.update({
@@ -74,11 +113,14 @@ export class PostRepository implements IPostRepository {
         },
       });
       return true;
-    } catch (error) {
+    } catch {
       return false;
     }
   }
 
+  /**
+   * Eliminar un post de manera lógica (soft delete).
+   */
   async softDelete(id: number): Promise<void> {
     await prisma.post.update({
       where: { id },
@@ -89,6 +131,9 @@ export class PostRepository implements IPostRepository {
     });
   }
 
+  /**
+   * Recuperar un post eliminado.
+   */
   async recover(id: number): Promise<void> {
     await prisma.post.update({
       where: { id },
@@ -99,23 +144,9 @@ export class PostRepository implements IPostRepository {
     });
   }
 
-  async findUserPosts(userId: number): Promise<Post[]> {
-    const posts = await prisma.post.findMany({
-      where: { authorId: userId, deleted: false },
-    });
-    return posts.map((post) =>
-      Post.with({
-        id: post.id,
-        title: post.title,
-        content: post.content,
-        authorId: post.authorId,
-        createdAt: post.createdAt,
-        updatedAt: post.updatedAt,
-        deleted: post.deleted,
-      })
-    );
-  }
-
+  /**
+   * Buscar todos los posts con detalles adicionales.
+   */
   async findAllWithDetails(): Promise<any[]> {
     const posts = await prisma.post.findMany({
       where: { deleted: false },
@@ -125,9 +156,9 @@ export class PostRepository implements IPostRepository {
         _count: { select: { likes: true } },
       },
     });
-  
+
     const totalUsers = await prisma.user.count();
-  
+
     return posts.map(post => ({
       id: post.id,
       title: post.title,
@@ -136,8 +167,9 @@ export class PostRepository implements IPostRepository {
       createdAt: post.createdAt,
       updatedAt: post.updatedAt,
       likes: post._count.likes,
-      totalUsers, // Incluye el total de usuarios para calcular la popularidad
+      totalUsers, // Incluye total de usuarios para calcular popularidad
     }));
   }
-  
 }
+
+export default PostRepository;

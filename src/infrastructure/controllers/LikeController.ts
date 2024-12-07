@@ -2,7 +2,7 @@ import { Request, Response } from 'express';
 import { LikeService } from '../../application/services/LikeService';
 
 export class LikeController {
-  constructor(private readonly likeService: LikeService) {}
+  constructor(private  likeService: LikeService) {}
 
   /**
    * Crear un "like" en un post
@@ -44,11 +44,15 @@ export class LikeController {
   async removeLike(req: Request, res: Response): Promise<void> {
     try {
       const userId = req.user?.id;
+      if (!userId) {
+        res.status(400).json({ error: 'userId es requerido' });
+        return;
+      }
       const { postId } = req.body;
 
       // Validar datos requeridos
-      if (!userId || !postId) {
-        res.status(400).json({ error: 'userId y postId son requeridos' });
+      if (!postId) {
+        res.status(400).json({ error: 'postId es requerido' });
         return;
       }
 

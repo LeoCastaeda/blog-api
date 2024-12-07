@@ -1,68 +1,115 @@
-import bcrypt from 'bcrypt';
-import { IUserRepository } from '../../domain/repositories/IUserRepository';
-import { Role, UserProps } from '../../domain/entities/User';
-
+import bcrypt from "bcrypt";
+import { IUserRepository } from "../../domain/repositories/IUserRepository";
+import { Role, UserProps } from "../../domain/entities/User";
 
 export class UserService {
   constructor(private userRepository: IUserRepository) {}
 
-  // Crear un nuevo usuario
-
-  // Obtener todos los usuarios
+  /**
+   * Obtener todos los usuarios
+   */
   async getAllUsers() {
-    return this.userRepository.findAll();
+    try {
+      const users = await this.userRepository.findAll();
+
+      if (!users || users.length === 0) {
+        throw new Error("No users found");
+      }
+
+      return users.map(user => ({
+        id: user.id,
+        username: user.username,
+        email: user.email,
+        role: user.role,
+        banned: user.banned,
+        createdAt: user.createdAt,
+        updatedAt: user.updatedAt,
+      }));
+    } catch (error) {
+      console.error("Error en getAllUsers:", error instanceof Error ? error.message : error);
+      throw new Error("Failed to fetch users");
+    }
   }
 
-  // Obtener un usuario por su ID
+  /**
+   * Obtener un usuario por ID
+   */
   async findById(userId: number) {
     const user = await this.userRepository.findById(userId);
     if (!user) {
-      throw new Error('User not found');
+      throw new Error("User not found");
     }
-    return user;
+    return {
+      id: user.id,
+      username: user.username,
+      email: user.email,
+      role: user.role,
+      banned: user.banned,
+      createdAt: user.createdAt,
+      updatedAt: user.updatedAt,
+    };  
+    
   }
 
-  // Actualizar el perfil del usuario
-  async updateUserProfile(userId: number, username: string, email: string, password: string, role: Role) {
-    const hashedPassword = await bcrypt.hash(password, 10);
-    const updates: Partial<UserProps> = { username, email, password: hashedPassword, role };
+  /**
+   * Actualizar el perfil del usuario
+   */
+  async updateUserProfile(
+    userId: number,
+    { username, email, password, role }: Partial<UserProps>
+  ) {
+    const updates: Partial<UserProps> = { username, email, role };
+
+    if (password) {
+      updates.password = await bcrypt.hash(password, 10);
+    }
+
     return this.updateUserData(userId, updates);
   }
 
-  // Actualizar los datos del usuario
+  /**
+   * Actualizar datos específicos del usuario
+   */
   async updateUserData(userId: number, newData: Partial<UserProps>) {
     const user = await this.userRepository.findById(userId);
     if (!user) {
-      throw new Error('User not found');
+      throw new Error("User not found");
     }
+
     return this.userRepository.update(user, newData);
   }
 
-  // Actualizar datos específicos
-  async updateUser(userId: number, updates: Partial<UserProps>) {
-    return this.updateUserData(userId, updates);
-  }
+  /**
+   * Banear un usuario
+   */
+  async banUser(userId: number, banned: boolean) {
+    const user = await this.userRepository.findById(userId);
+    if (!user) {
+      throw new Error("User not found");
+    }
 
-  // Actualizar el correo del usuario
-  async updateUserEmail(userId: number, newEmail: string) {
-    return this.userRepository.updateEmail(userId, newEmail);
-  }
-
-  // Banear un usuario
-  async banUser(userId: number, p0: { banned: boolean; }) {
     return this.userRepository.banUser(userId);
   }
 
-  // Desbanear un usuario
-  async unbanUser(userId: number) {
+  /**
+   * Desbanear un usuario
+   */
+  async unbanUser(userId: number, banned: boolean) {
+    const user = await this.userRepository.findById(userId);
+    if (!user) {
+      throw new Error("User not found");
+    }
+
     return this.userRepository.unbanUser(userId);
   }
 
-  // Eliminar un usuario
+  /**
+   * Eliminar un usuario
+   */
   async deleteUser(userId: number) {
     const user = await this.userRepository.findById(userId);
     if (!user) {
-      throw new Error('User not found');
+      throw new Error("User not found");
     }
     return this.userRepository.delete(userId);
   }

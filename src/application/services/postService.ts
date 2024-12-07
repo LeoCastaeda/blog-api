@@ -1,14 +1,15 @@
-import { Post } from '../../domain/entities/Post';
-import { IPostRepository } from '../../domain/repositories/IPostRepository';
-import { PostActionDto } from '../dtos/postAction.dto';
+import { Post } from "../../domain/entities/Post";
+import { IPostRepository } from "../../domain/repositories/IPostRepository";
+import { PostActionDto } from "../dtos/postAction.dto";
 
 export class PostService {
-  constructor(
-    private readonly postRepository: IPostRepository,
-   
-  ) {}
+  constructor(private readonly postRepository: IPostRepository) {}
 
   async createPost(title: string, content: string, authorId: number): Promise<Post> {
+    if (!title || !content || !authorId) {
+      throw new Error("Missing required fields: title, content, authorId");
+    }
+
     const post = Post.create(title, content, authorId);
     await this.postRepository.save(post);
     return post;
@@ -70,17 +71,17 @@ export class PostService {
 
     await this.postRepository.recover(dto.postId);
   }
+
   async getPostsWithDetails(): Promise<any[]> {
     const posts = await this.postRepository.findAllWithDetails();
 
     return posts.map(post => {
-      const enrichedPost = Post.with(post); // Crea una instancia enriquecida de Post
-    const popularity = enrichedPost.calculatePopularity(post.totalUsers, post.likes);
+      const enrichedPost = Post.with(post);
+      const popularity = enrichedPost.calculatePopularity(post.totalUsers || 0, post.likes || 0);
 
-    return enrichedPost.enrichDetails(post.author, popularity);
-  });
-}
-
+      return enrichedPost.enrichDetails(post.author, popularity);
+    });
+  }
 }
 
 export default PostService;

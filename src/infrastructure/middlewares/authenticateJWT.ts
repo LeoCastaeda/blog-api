@@ -28,6 +28,11 @@ export const authenticateJWT = (
       return;
     }
 
+    if (typeof decoded !== 'object' || !('id' in decoded) || !('role' in decoded)) {
+      res.status(403).json({ error: 'Invalid token payload' });
+      return;
+    }
+
     req.user = decoded;
     next();
   } catch (error) {

@@ -1,110 +1,107 @@
-import { IUserRepository } from '../../domain/repositories/IUserRepository';
-import { User, UserProps } from '../../domain/entities/User';
-import { Role as CustomRole } from '../../domain/entities/Role';
-import prisma from '../database/prismaClient';
-import { Role as PrismaRole } from '@prisma/client';
+import { IUserRepository } from "../../domain/repositories/IUserRepository";
+import { User, UserProps } from "../../domain/entities/User";
+import { Role as CustomRole } from "../../domain/entities/Role";
+import prisma from "../database/prismaClient";
+import { Role as PrismaRole } from "@prisma/client";
 
-
+// Mapeo de roles entre Prisma y dominio
 function mapPrismaRoleToRole(prismaRole: PrismaRole): CustomRole {
-  const roleMap = {
-    [PrismaRole.admin]: CustomRole.Admin,
-    [PrismaRole.simpleUser]: CustomRole.SimpleUser,
-  };
-  return roleMap[prismaRole] || CustomRole.SimpleUser;
+  return prismaRole === "admin" ? CustomRole.Admin : CustomRole.SimpleUser;
 }
 
 function mapRoleToPrismaRole(role: CustomRole): PrismaRole {
-  const roleMap: { [key in CustomRole]: PrismaRole } = {
-    [CustomRole.Admin]: PrismaRole.admin,
-    [CustomRole.SimpleUser]: PrismaRole.simpleUser,
-  };
-  if (!roleMap[role]) {
-    throw new Error(`Unknown role: ${role}`);
-  }
-  return roleMap[role];
+  return role === CustomRole.Admin ? "admin" : "simpleUser";
 }
 
 export class UserRepository implements IUserRepository {
-  async findAll(): Promise<User[]> {
-    const users = await prisma.user.findMany();
-    return users.map(user => User.with({
-      id: user.id,
-      username: user.username,
-      email: user.email,
-      password: user.password,
-      role: mapPrismaRoleToRole(user.role),
-      banned: user.banned,
-      createdAt: user.createdAt,
-      updatedAt: user.updatedAt,
-    }));
-  }
-
-  async findById(id: number): Promise<User | null> {
-    const user = await prisma.user.findUnique({ where: { id } });
-    return user ? User.with({
-      id: user.id,
-      username: user.username,
-      email: user.email,
-      password: user.password,
-      role: mapPrismaRoleToRole(user.role),
-      banned: user.banned,
-      createdAt: user.createdAt,
-      updatedAt: user.updatedAt,
-    }) : null;
-  }
-
-  async findByEmail(email: string): Promise<User | null> {
-    const user = await prisma.user.findUnique({ where: { email } });
-    return user ? User.with({
-      id: user.id,
-      username: user.username,
-      email: user.email,
-      password: user.password,
-      role: mapPrismaRoleToRole(user.role),
-      banned: user.banned,
-      createdAt: user.createdAt,
-      updatedAt: user.updatedAt,
-    }) : null;
-  }
-
-  async findByUsername(username: string): Promise<User | null> {
-    const user = await prisma.user.findUnique({ where: { username } });
-    return user ? User.with({
-      id: user.id,
-      username: user.username,
-      email: user.email,
-      password: user.password,
-      role: mapPrismaRoleToRole(user.role),
-      banned: user.banned,
-      createdAt: user.createdAt,
-      updatedAt: user.updatedAt,
-    }) : null;
-  }
-
-  async create(user: User): Promise<User> {
-    const createdUser = await prisma.user.create({
+  /**
+   * Crear un nuevo usuario
+   */
+  async create(userProps: UserProps): Promise<User> {
+    const user = await prisma.user.create({
       data: {
-        username: user.username,
-        email: user.email,
-        password: user.password,
-        role: mapRoleToPrismaRole(user.role),
-        banned: user.banned,
-        createdAt: user.createdAt,
-        updatedAt: user.updatedAt,
-      }
+        username: userProps.username,
+        email: userProps.email,
+        password: userProps.password,
+        role: mapRoleToPrismaRole(userProps.role),
+        banned: userProps.banned,
+        createdAt: userProps.createdAt,
+        updatedAt: userProps.updatedAt,
+      },
     });
     return User.with({
-      id: createdUser.id,
-      username: createdUser.username,
-      email: createdUser.email,
-      password: createdUser.password,
-      role: mapPrismaRoleToRole(createdUser.role),
-      banned: createdUser.banned,
-      createdAt: createdUser.createdAt,
-      updatedAt: createdUser.updatedAt,
+      id: user.id,
+      username: user.username,
+      email: user.email,
+      password: user.password,
+      role: mapPrismaRoleToRole(user.role),
+      banned: user.banned,
+      createdAt: user.createdAt,
+      updatedAt: user.updatedAt,
     });
   }
 
+  /**
+   * Actualizar un usuario por ID
+   */
+  async updateUser(userId: number, newData: Partial<UserProps>): Promise<void> {
+    const updateData = {
+      ...newData,
+      role: newData.role ? mapRoleToPrismaRole(newData.role) : undefined,
+    };
+
+    // Filtrar campos undefined
+    const filteredData = Object.fromEntries(
+      Object.entries(updateData).filter(([, value]) => value !== undefined)
+    );
+
+    await prisma.user.update({
+      where: { id: userId },
+      data: filteredData,
+    });
+  }
+
+  /**
+   * Buscar usuario por email
+   */
+  async findByEmail(email: string): Promise<User | null> {
+    const user = await prisma.user.findUnique({ where: { email } });
+    return user
+      ? User.with({
+          id: user.id,
+          username: user.username,
+          email: user.email,
+          password: user.password,
+          role: mapPrismaRoleToRole(user.role),
+          banned: user.banned,
+          createdAt: user.createdAt,
+          updatedAt: user.updatedAt,
+        })
+      : null;
+  }
+
+  /**
+   * Buscar usuario por nombre de usuario
+   */
+  async findByUsername(username: string): Promise<User | null> {
+    const user = await prisma.user.findUnique({ where: { username } });
+    return user
+      ? User.with({
+          id: user.id,
+          username: user.username,
+          email: user.email,
+          password: user.password,
+          role: mapPrismaRoleToRole(user.role),
+          banned: user.banned,
+          createdAt: user.createdAt,
+          updatedAt: user.updatedAt,
+        })
+      : null;
+  }
+
+  /**
+   * Guardar usuario
+   */
   async save(user: User): Promise<void> {
     await prisma.user.update({
       where: { id: user.id },
@@ -114,31 +111,60 @@ export class UserRepository implements IUserRepository {
         password: user.password,
         role: mapRoleToPrismaRole(user.role),
         banned: user.banned,
+        createdAt: user.createdAt,
         updatedAt: user.updatedAt,
-      }
+      },
     });
   }
 
-  async update(user: User, newData: Partial<UserProps>): Promise<void> {
-    const updateData = {
-      ...newData,
-      role: newData.role ? mapRoleToPrismaRole(newData.role) : undefined,
-    };
-
-    const cleanData = Object.fromEntries(
-      Object.entries(updateData).filter(([, value]) => value !== undefined)
+  /**
+   * Obtener todos los usuarios
+   */
+  async findAll(): Promise<User[]> {
+    const users = await prisma.user.findMany();
+    return users.map(user =>
+      User.with({
+        id: user.id,
+        username: user.username,
+        email: user.email,
+        password: user.password,
+        role: mapPrismaRoleToRole(user.role),
+        banned: user.banned,
+        createdAt: user.createdAt,
+        updatedAt: user.updatedAt,
+      })
     );
-
-    await prisma.user.update({
-      where: { id: user.id },
-      data: cleanData,
-    });
   }
 
+  /**
+   * Obtener usuario por ID
+   */
+  async findById(id: number): Promise<User | null> {
+    const user = await prisma.user.findUnique({ where: { id } });
+    return user
+      ? User.with({
+          id: user.id,
+          username: user.username,
+          email: user.email,
+          password: user.password,
+          role: mapPrismaRoleToRole(user.role),
+          banned: user.banned,
+          createdAt: user.createdAt,
+          updatedAt: user.updatedAt,
+        })
+      : null;
+  }
+
+  /**
+   * Eliminar un usuario
+   */
   async delete(id: number): Promise<void> {
     await prisma.user.delete({ where: { id } });
   }
 
+  /**
+   * Banear un usuario
+   */
   async banUser(userId: number): Promise<void> {
     await prisma.user.update({
       where: { id: userId },
@@ -146,27 +172,41 @@ export class UserRepository implements IUserRepository {
     });
   }
 
+  /**
+   * Desbanear un usuario
+   */
   async unbanUser(userId: number): Promise<void> {
     await prisma.user.update({
       where: { id: userId },
       data: { banned: false },
     });
   }
-  async getAllUsers() {
-    const users = await prisma.user.findMany();
-    console.log("Users de la base de datos:", users);
-    return users.map(user => ({ id: user.id, username: user.username, email: user.email, role: user.role }));
+
+  /**
+   * Contar usuarios
+   */
+  async countUsers(): Promise<number> {
+    return prisma.user.count();
+  }
+  async update(user: User, newData: Partial<User>): Promise<void> {
+    // Implementación de actualización usando Prisma
+    const filteredData = Object.fromEntries(
+      Object.entries(newData).filter(([, value]) => value !== undefined)
+    );
+
+    await prisma.user.update({
+      where: { id: user.id },
+      data: filteredData,
+    });
   }
 
   async updateEmail(userId: number, newEmail: string): Promise<void> {
+    // Implementación para actualizar solo el email
     await prisma.user.update({
       where: { id: userId },
       data: { email: newEmail },
     });
   }
-  async countUsers(): Promise<number> {
-    return await prisma.user.count();
-  }
 }
 
-
+export default UserRepository;

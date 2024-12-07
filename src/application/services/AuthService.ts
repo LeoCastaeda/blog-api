@@ -13,12 +13,12 @@ export class AuthService {
     username: string,
     email: string,
     password: string,
-    role: Role
+    role: string
   ): Promise<{ user: User; token: string }> {
     // Verificar si el correo ya está registrado
     const existingUserByEmail = await this.userRepository.findByEmail(email);
     if (existingUserByEmail) {
-      throw new Error("El correo electrónico ya está registrado");
+      throw new Error("El correo ya está registrado.");
     }
 
     // Verificar si el nombre de usuario ya está registrado
@@ -31,8 +31,9 @@ export class AuthService {
     const hashedPassword = await bcrypt.hash(password, 10);
 
     // Crear el usuario y guardarlo
+    const userRole = role === 'admin' ? Role.Admin : Role.SimpleUser;
     const user = await this.userRepository.create(
-      User.create(username, email, hashedPassword, role)
+      User.create(username, email, hashedPassword, userRole)
     );
 
     // Generar un token JWT para el usuario
@@ -65,6 +66,24 @@ export class AuthService {
 
     return { user, token };
   }
+  /**
+   * Cerrar sesión (ejemplo con lista negra de tokens)
+   */
+  async cerrarSesion(token: string): Promise<void> {
+    try {
+      // Verificar y decodificar el token
+      const decoded = tokenService.verifyToken(token);
+
+      if (decoded && typeof decoded === "object" && "id" in decoded && "role" in decoded) {
+        // Agregar el token a la lista negra
+        tokenService.addToBlacklist(token);
+      } else {
+        throw new Error("Token inválido");
+      }
+    } catch (error) {
+      throw new Error("Token inválido o expirado");
+    }
+  }
 
   /**
    * Refrescar el token
@@ -85,25 +104,7 @@ export class AuthService {
     }
   }
 
-  /**
-   * Cerrar sesión (ejemplo con lista negra de tokens)
-   */
-  async cerrarSesion(token: string): Promise<void> {
-    try {
-      // Verificar y decodificar el token
-      const decoded = tokenService.verifyToken(token);
-
-      if (decoded && typeof decoded === "object" && "id" in decoded && "role" in decoded) {
-        // Implementar lógica para invalidar el token
-        // Ejemplo: Agregar el token a una lista negra
-        console.log("Token inválido añadido a lista negra:", token);
-      } else {
-        throw new Error("Token inválido");
-      }
-    } catch (error) {
-      throw new Error("Token inválido o expirado");
-    }
-  }
+  
 }
 
 export default AuthService;

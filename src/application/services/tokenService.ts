@@ -15,5 +15,9 @@ class TokenService implements ITokenService {
       return null; // Retorna null si el token no es válido
     }
   }
+
+  addToBlacklist(token: string): void {
+    // Implement token blacklist logic if needed
+  }
 } 
 export default new TokenService();

@@ -16,6 +16,6 @@ export class UpdateUserProfileUseCase {
     } = dto;
 
     // Llama al servicio con los valores procesados
-    return this.userService.updateUserProfile(userId, username, email, password, role);
+    return this.userService.updateUserProfile(userId, { username, email, password, role});
   }
 }
