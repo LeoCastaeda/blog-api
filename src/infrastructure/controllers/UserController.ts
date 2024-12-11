@@ -4,12 +4,10 @@ import { UserService } from "../../application/services/userService";
 export class UserController {
   constructor(private readonly userService: UserService) {}
 
-  /**
-   * Obtener todos los usuarios (solo accesible para administradores)
-   */
+  
   async getAllUsers(req: Request, res: Response): Promise<void> {
     try {
-      const roleFromToken = (req as any).user.role; // Rol del usuario desde el token
+      const roleFromToken = (req as any).user.role;  
 
       if (roleFromToken !== "admin") {
         res.status(403).json({ error: "Unauthorized action" });
@@ -41,39 +39,37 @@ export class UserController {
     }
   }
 
-  /**
-   * Actualizar el perfil del usuario
-   */
+   
   async updateUserProfile(req: Request, res: Response): Promise<void> {
     try {
-      const { id } = req.params; // ID del usuario a actualizar
-      const userIdFromToken = (req as any).user.id; // ID del usuario autenticado
+      const { id } = req.params;  
+      const userIdFromToken = (req as any).user.id;  
   
       
-      // Validar que el ID sea numérico
+       
       if (!id || isNaN(Number(id))) {
         res.status(400).json({ error: "Invalid user ID" });
         return;
       }
   
-      // Verificar que el usuario solo pueda actualizar su propio perfil
+       
       if (userIdFromToken !== Number(id)) {
          res.status(403).json({ error: "Unauthorized action" });
         return;
       }
   
-      // Extraer datos del cuerpo de la solicitud
+       
       const { username, email, password } = req.body;
       
   
-      // Validar que al menos un campo sea enviado
+       
       if (!username && !email && !password) {
         
         res.status(400).json({ error: "No data provided for update" });
         return;
       }
   
-      // Llamar al método del servicio para actualizar el perfil
+       
       const updatedUser = await this.userService.updateUserProfile(Number(id), {
         username,
         email,
@@ -90,12 +86,10 @@ export class UserController {
   }
   
   
-  /**
-   * Banear un usuario (solo accesible para administradores)
-   */
+  
   async banUser(req: Request, res: Response): Promise<void> {
     try {
-      const roleFromToken = (req as any).user.role; // Rol del usuario desde el token
+      const roleFromToken = (req as any).user.role;  
 
       if (roleFromToken !== "admin") {
         res.status(403).json({ error: "Unauthorized action" });
@@ -116,12 +110,10 @@ export class UserController {
     }
   }
 
-  /**
-   * Desbanear un usuario (solo accesible para administradores)
-   */
+  
   async unbanUser(req: Request, res: Response): Promise<void> {
     try {
-      const roleFromToken = (req as any).user.role; // Rol del usuario desde el token
+      const roleFromToken = (req as any).user.role;  
 
       if (roleFromToken !== "admin") {
         res.status(403).json({ error: "Unauthorized action" });
@@ -142,12 +134,10 @@ export class UserController {
     }
   }
 
-  /**
-   * Eliminar un usuario (solo accesible para administradores)
-   */
+  
   async deleteUser(req: Request, res: Response): Promise<void> {
     try {
-      const roleFromToken = (req as any).user.role; // Rol del usuario desde el token
+      const roleFromToken = (req as any).user.role;  
 
       if (roleFromToken !== "admin") {
         res.status(403).json({ error: "Unauthorized action" });

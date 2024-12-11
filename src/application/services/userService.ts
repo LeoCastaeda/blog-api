@@ -5,9 +5,7 @@ import { Role, UserProps } from "../../domain/entities/User";
 export class UserService {
   constructor(private userRepository: IUserRepository) {}
 
-  /**
-   * Obtener todos los usuarios
-   */
+  
   async getAllUsers() {
     try {
       const users = await this.userRepository.findAll();
@@ -31,9 +29,7 @@ export class UserService {
     }
   }
 
-  /**
-   * Obtener un usuario por ID
-   */
+   
   async findById(userId: number) {
     const user = await this.userRepository.findById(userId);
     if (!user) {
@@ -51,9 +47,7 @@ export class UserService {
     
   }
 
-  /**
-   * Actualizar el perfil del usuario
-   */
+  
   async updateUserProfile(
     userId: number,
     { username, email, password, role }: Partial<UserProps>
@@ -67,9 +61,7 @@ export class UserService {
     return this.updateUserData(userId, updates);
   }
 
-  /**
-   * Actualizar datos específicos del usuario
-   */
+   
   async updateUserData(userId: number, newData: Partial<UserProps>) {
     const user = await this.userRepository.findById(userId);
     if (!user) {
@@ -79,9 +71,7 @@ export class UserService {
     return this.userRepository.update(user, newData);
   }
 
-  /**
-   * Banear un usuario
-   */
+   
   async banUser(userId: number, banned: boolean) {
     const user = await this.userRepository.findById(userId);
     if (!user) {
@@ -91,9 +81,7 @@ export class UserService {
     return this.userRepository.banUser(userId);
   }
 
-  /**
-   * Desbanear un usuario
-   */
+   
   async unbanUser(userId: number, banned: boolean) {
     const user = await this.userRepository.findById(userId);
     if (!user) {
@@ -103,9 +91,7 @@ export class UserService {
     return this.userRepository.unbanUser(userId);
   }
 
-  /**
-   * Eliminar un usuario
-   */
+   
   async deleteUser(userId: number) {
     const user = await this.userRepository.findById(userId);
     if (!user) {

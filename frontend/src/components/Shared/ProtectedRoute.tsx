@@ -7,6 +7,7 @@ const ProtectedRoute: React.FC<{ children: React.ReactNode }> = ({ children }) =
 
   if (!token) {
     return <Navigate to="/login" />;
+
   }
 
   return <>{children}</>;

@@ -3,94 +3,114 @@ import { Like } from '../../domain/entities/Like';
 import prisma from '../database/prismaClient';
 
 export class LikeRepository implements ILikeRepository {
-  async findByUserIdAndPostId(_userId: number, _postId: number): Promise<Like | null> {
+  async findByUserIdAndPostId(userId: number, postId: number): Promise<Like | null> {
     const like = await prisma.like.findFirst({
       where: {
-        userId: _userId,
-        postId: _postId,
-        deleted: false
-      }
+        userId,
+        postId,
+        deleted: false,
+      },
     });
     return like ? Like.with(like) : null;
   }
+
   async findById(id: number): Promise<Like | null> {
-    const like = await prisma.like.findUnique({
-      where: { 
-        id,
-        deleted: false
-      }
+    const like = await prisma.like.findFirst({
+      where: { id, deleted: false },
     });
     return like ? Like.with(like) : null;
   }
 
   async findByUserId(userId: number): Promise<Like[]> {
     const likes = await prisma.like.findMany({
-      where: { 
-        userId, 
-        deleted: false 
-      }
+      where: { userId, deleted: false },
     });
-    return likes.map(like => Like.with(like));
+    return likes.map((like) => Like.with(like));
   }
 
   async findByPostId(postId: number): Promise<Like[]> {
     const likes = await prisma.like.findMany({
-      where: { 
-        postId, 
-        deleted: false 
-      }
+      where: { postId, deleted: false },
     });
-    return likes.map(like => Like.with(like));
+    return likes.map((like) => Like.with(like));
   }
 
   async countByPostId(postId: number): Promise<number> {
     return await prisma.like.count({
-      where: { 
-        postId, 
-        deleted: false 
-      }
+      where: { postId, deleted: false },
     });
   }
 
   async countByUserId(userId: number): Promise<number> {
-    const count = await prisma.like.count({
-      where: { 
-        userId, 
-        deleted: false 
-      }
+    return await prisma.like.count({
+      where: { userId, deleted: false },
     });
-    return count
   }
 
   async save(like: Like): Promise<Like> {
+    const existingLike = await prisma.like.findFirst({
+      where: { userId: like.userId, postId: like.postId },
+    });
+
+    if (existingLike) {
+      if (existingLike.deleted) {
+        const updatedLike = await prisma.like.update({
+          where: { id: existingLike.id },
+          data: { deleted: false },
+        });
+        return Like.with(updatedLike);
+      }
+      return Like.with(existingLike);
+    }
+
     const createdLike = await prisma.like.create({
       data: {
         userId: like.userId,
         postId: like.postId,
       },
     });
-    return Like.with({
-      id: createdLike.id,
-      userId: createdLike.userId,
-      postId: createdLike.postId,
-      createdAt: createdLike.createdAt,
+    return Like.with(createdLike);
+  }
+
+  async toggle(userId: number, postId: number): Promise<{ action: string; like: Like | null }> {
+    const existingLike = await prisma.like.findFirst({
+      where: { userId, postId },
     });
+
+    if (existingLike) {
+      if (existingLike.deleted) {
+        const updatedLike = await prisma.like.update({
+          where: { id: existingLike.id },
+          data: { deleted: false },
+        });
+        return { action: "reactivated", like: Like.with(updatedLike) };
+      } else {
+        await prisma.like.update({
+          where: { id: existingLike.id },
+          data: { deleted: true },
+        });
+        return { action: "deleted", like: null };
+      }
+    }
+
+    const newLike = await prisma.like.create({
+      data: { userId, postId },
+    });
+    return { action: "created", like: Like.with(newLike) };
   }
 
   async delete(id: number): Promise<void> {
     await prisma.like.update({
       where: { id },
-      data: { deleted: true }
+      data: { deleted: true },
     });
   }
 
   async findAll(): Promise<Like[]> {
     const likes = await prisma.like.findMany({
-      where: {
-        deleted: false
-      }
+      where: { deleted: false },
     });
-    return likes.map(like => Like.with(like));
+    return likes.map((like) => Like.with(like));
   }
 }
 

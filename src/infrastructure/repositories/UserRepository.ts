@@ -4,7 +4,7 @@ import { Role as CustomRole } from "../../domain/entities/Role";
 import prisma from "../database/prismaClient";
 import { Role as PrismaRole } from "@prisma/client";
 
-// Mapeo de roles entre Prisma y dominio
+ 
 function mapPrismaRoleToRole(prismaRole: PrismaRole): CustomRole {
   return prismaRole === "admin" ? CustomRole.Admin : CustomRole.SimpleUser;
 }
@@ -14,9 +14,7 @@ function mapRoleToPrismaRole(role: CustomRole): PrismaRole {
 }
 
 export class UserRepository implements IUserRepository {
-  /**
-   * Crear un nuevo usuario
-   */
+  
   async create(userProps: UserProps): Promise<User> {
     const user = await prisma.user.create({
       data: {
@@ -41,9 +39,7 @@ export class UserRepository implements IUserRepository {
     });
   }
 
-  /**
-   * Actualizar un usuario por ID
-   */
+  
   async updateUser(userId: number, newData: Partial<UserProps>): Promise<void> {
     const updateData = {
       ...newData,
@@ -61,9 +57,7 @@ export class UserRepository implements IUserRepository {
     });
   }
 
-  /**
-   * Buscar usuario por email
-   */
+   
   async findByEmail(email: string): Promise<User | null> {
     const user = await prisma.user.findUnique({ where: { email } });
     return user
@@ -80,9 +74,7 @@ export class UserRepository implements IUserRepository {
       : null;
   }
 
-  /**
-   * Buscar usuario por nombre de usuario
-   */
+   
   async findByUsername(username: string): Promise<User | null> {
     const user = await prisma.user.findUnique({ where: { username } });
     return user
@@ -99,9 +91,6 @@ export class UserRepository implements IUserRepository {
       : null;
   }
 
-  /**
-   * Guardar usuario
-   */
   async save(user: User): Promise<void> {
     await prisma.user.update({
       where: { id: user.id },
@@ -117,9 +106,6 @@ export class UserRepository implements IUserRepository {
     });
   }
 
-  /**
-   * Obtener todos los usuarios
-   */
   async findAll(): Promise<User[]> {
     const users = await prisma.user.findMany();
     return users.map(user =>
@@ -136,9 +122,7 @@ export class UserRepository implements IUserRepository {
     );
   }
 
-  /**
-   * Obtener usuario por ID
-   */
+  
   async findById(id: number): Promise<User | null> {
     const user = await prisma.user.findUnique({ where: { id } });
     return user
@@ -155,16 +139,12 @@ export class UserRepository implements IUserRepository {
       : null;
   }
 
-  /**
-   * Eliminar un usuario
-   */
+  
   async delete(id: number): Promise<void> {
     await prisma.user.delete({ where: { id } });
   }
 
-  /**
-   * Banear un usuario
-   */
+  
   async banUser(userId: number): Promise<void> {
     await prisma.user.update({
       where: { id: userId },
@@ -172,9 +152,7 @@ export class UserRepository implements IUserRepository {
     });
   }
 
-  /**
-   * Desbanear un usuario
-   */
+  
   async unbanUser(userId: number): Promise<void> {
     await prisma.user.update({
       where: { id: userId },
@@ -182,9 +160,7 @@ export class UserRepository implements IUserRepository {
     });
   }
 
-  /**
-   * Contar usuarios
-   */
+  
   async countUsers(): Promise<number> {
     return prisma.user.count();
   }

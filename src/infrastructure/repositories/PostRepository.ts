@@ -4,9 +4,7 @@ import prisma from "../database/prismaClient";
 
 export class PostRepository implements IPostRepository {
  
-  /**
-   * Crear un nuevo post.
-   */
+
   async save(post: Post): Promise<void> {
     await prisma.post.create({
       data: {

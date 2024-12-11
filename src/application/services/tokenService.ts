@@ -12,12 +12,12 @@ class TokenService implements ITokenService {
     try {
       return jwt.verify(token, secret) as TokenPayload;
     } catch (error) {
-      return null; // Retorna null si el token no es válido
+      return null; 
     }
   }
 
   addToBlacklist(token: string): void {
-    // Implement token blacklist logic if needed
+     
   }
 } 
 export default new TokenService();

@@ -9,9 +9,7 @@ export class AuthController implements IAuthController {
     this.authService = authService;
   }
 
-  /**
-   * Registro de usuario
-   */
+  
   async registrar(req: Request, res: Response): Promise<void> {
     try {
       const { username, email, password, role } = req.body;
@@ -43,9 +41,7 @@ export class AuthController implements IAuthController {
     }
   }
 
-  /**
-   * Inicio de sesión
-   */
+  
   async iniciarSesion(req: Request, res: Response): Promise<void> {
     try {
       const { email, password } = req.body;
@@ -75,9 +71,7 @@ export class AuthController implements IAuthController {
     }
   }
 
-  /**
-   * Cerrar sesión (invalidar token)
-   */
+  
   async cerrarSesion(req: Request, res: Response): Promise<void> {
     try {
       const token = req.headers.authorization?.split(" ")[1];
@@ -95,9 +89,7 @@ export class AuthController implements IAuthController {
     }
   }
 
-  /**
-   * Refrescar token
-   */
+  
   async refreshToken(req: Request, res: Response): Promise<void> {
     try {
       const { token } = req.body;

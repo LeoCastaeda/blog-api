@@ -1,6 +1,5 @@
 import { Request, Response, NextFunction } from 'express';
-import TokenService from '../../application/services/tokenService'; // Servicio de token centralizado
-
+import TokenService from '../../application/services/tokenService';  
 export const authenticateJWT = (
   req: Request,
   res: Response,
@@ -13,7 +12,7 @@ export const authenticateJWT = (
     return;
   }
 
-  const token = authHeader.split(' ')[1]; // Extraer el token después de "Bearer"
+  const token = authHeader.split(' ')[1];   
 
   if (!token) {
     res.status(401).json({ error: 'Access token is missing' });

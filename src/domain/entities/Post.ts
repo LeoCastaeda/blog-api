@@ -18,7 +18,7 @@ export type PostProps = {
       if (!authorId) throw new Error("Author ID is required");
   
       return new Post({
-        id: 0, // This should be set by the database
+        id: 0,  
         title,
         content,
         authorId,

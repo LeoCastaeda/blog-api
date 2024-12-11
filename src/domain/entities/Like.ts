@@ -1,5 +1,5 @@
 export type LikeProps = {
-  id: number | null; // Permitir null para indicar que será asignado por la base de datos
+  id: number | null;   
   userId: number;
   postId: number;
   createdAt: Date;
@@ -13,7 +13,7 @@ export class Like {
     if (!postId || postId <= 0) throw new Error("Post ID must be a positive number");
 
     return new Like({
-      id: null, // ID será asignado por la base de datos
+      id: null,  
       userId,
       postId,
       createdAt: new Date(),

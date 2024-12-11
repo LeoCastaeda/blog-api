@@ -7,8 +7,8 @@ const Navbar: React.FC = () => {
   const navigate = useNavigate();
 
   const handleLogout = () => {
-    logout(); 
-    navigate("/login"); 
+    logout();
+    navigate("/login");
   };
 
   return (
@@ -18,6 +18,10 @@ const Navbar: React.FC = () => {
         {user ? (
           <>
             <li><Link to="/profile">Perfil</Link></li>
+            {/* Mostrar enlace de administración solo si el usuario es admin */}
+            {user.role === "admin" && (
+              <li><Link to="/admin/users">Administrar Usuarios</Link></li>
+            )}
             <li>
               <button onClick={handleLogout}>Cerrar sesión</button>
             </li>
@@ -26,9 +30,6 @@ const Navbar: React.FC = () => {
           <>
             <li><Link to="/login">Login</Link></li>
             <li><Link to="/register">Register</Link></li>
-            <li>
-              <button onClick={handleLogout}>Cerrar sesión</button>
-            </li>
           </>
         )}
       </ul>
@@ -37,5 +38,4 @@ const Navbar: React.FC = () => {
 };
 
 export default Navbar;
-
 

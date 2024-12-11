@@ -4,32 +4,30 @@ import { LikeService } from '../../application/services/LikeService';
 export class LikeController {
   constructor(private  likeService: LikeService) {}
 
-  /**
-   * Crear un "like" en un post
-   */
+ 
   async createLike(req: Request, res: Response): Promise<void> {
     try {
-      const userId = req.user?.id; // Asume que el middleware agrega req.user
+      const userId = req.user?.id; 
       if (!userId) {
         res.status(400).json({ error: 'userId es requerido' });
         return;
       }
       const { postId } = req.body;
 
-      // Validar datos requeridos
+      
       if (!postId) {
         res.status(400).json({ error: 'postId son requeridos' });
         return;
       }
 
-      // Agregar like
+     
       const like = await this.likeService.addLike({ userId, postId });
       res.status(201).json({
         message: 'Like agregado correctamente',
         like: like.toJSON(),
       });
     } catch (error) {
-      // Manejar errores
+      
       if (error instanceof Error && error.message === 'Ya has dado like a este post') {
         res.status(409).json({ error: error.message });
       } else {
@@ -38,9 +36,7 @@ export class LikeController {
     }
   }
 
-  /**
-   * Eliminar un "like" de un post
-   */
+  
   async removeLike(req: Request, res: Response): Promise<void> {
     try {
       const userId = req.user?.id;
@@ -50,17 +46,17 @@ export class LikeController {
       }
       const { postId } = req.body;
 
-      // Validar datos requeridos
+       
       if (!postId) {
         res.status(400).json({ error: 'postId es requerido' });
         return;
       }
 
-      // Eliminar like
+     
       await this.likeService.removeLike({ userId, postId });
       res.status(200).json({ message: 'Like eliminado correctamente' });
     } catch (error) {
-      // Manejar errores
+       
       if (error instanceof Error && error.message === 'No puedes eliminar un like que no existe') {
         res.status(404).json({ error: error.message });
       } else {
@@ -68,10 +64,7 @@ export class LikeController {
       }
     }
   }
-
-  /**
-   * Contar los "likes" de un post
-   */
+ 
   async countLikes(req: Request, res: Response): Promise<void> {
     try {
       const { postId } = req.params;
@@ -82,7 +75,7 @@ export class LikeController {
         return;
       }
 
-      // Contar likes
+     
       const count = await this.likeService.countLikesByPost({ postId: Number(postId) });
       res.status(200).json({ count });
     } catch (error) {

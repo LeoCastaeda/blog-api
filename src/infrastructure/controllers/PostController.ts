@@ -5,9 +5,7 @@ import { PostActionDto } from "../../application/dtos/postAction.dto";
 export class PostController {
   constructor(private readonly postService: PostService) {}
 
-  /**
-   * Crear un nuevo post
-   */
+ 
   async createPost(req: Request, res: Response): Promise<void> {
     try {
       const { title, content, authorId } = req.body;
@@ -20,9 +18,7 @@ export class PostController {
     }
   }
 
-  /**
-   * Obtener un post por ID
-   */  async getPostById(req: Request, res: Response): Promise<void> {
+    async getPostById(req: Request, res: Response): Promise<void> {
     try {
       const { id } = req.params;
       
