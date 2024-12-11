@@ -43,9 +43,7 @@ export class PostController {
     }
   }
 
-  /**
-   * Obtener todos los posts
-   */
+ 
   async getAllPosts(req: Request, res: Response): Promise<void> {
     try {
       const posts = await this.postService.getAllPosts();
@@ -57,9 +55,7 @@ export class PostController {
     }
   }
 
-  /**
-   * Actualizar un post
-   */
+ 
   async updatePost(req: Request, res: Response): Promise<void> {
     try {
       const { id } = req.params;
@@ -85,9 +81,7 @@ export class PostController {
     }
   }
 
-  /**
-   * Eliminar un post (soft delete)
-   */
+  
   async softDeletePost(req: Request, res: Response): Promise<void> {
     try {
       const postId = Number(req.params.id);
@@ -109,9 +103,7 @@ export class PostController {
     }
   }
 
-  /**
-   * Recuperar un post eliminado
-   */
+  
   async recoverPost(req: Request, res: Response): Promise<void> {
     try {
       const postId = Number(req.params.id);
@@ -135,9 +127,7 @@ export class PostController {
     }
   }
 
-  /**
-   * Obtener posts con detalles adicionales
-   */
+  
   async getPostsWithDetails(req: Request, res: Response): Promise<void> {
     try {
       const posts = await this.postService.getPostsWithDetails();

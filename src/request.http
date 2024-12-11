@@ -14,7 +14,7 @@ POST http://localhost:3000/api/auth/login
 Content-Type: application/json
 
 {
-  "email": "lulu11_update@example.com",
+  "email": "lulu1@example.com",
   "password": "12345"
 }
 
@@ -68,23 +68,21 @@ Content-Type: application/json
 
 ### Posts - Crear un nuevo post
 POST http://localhost:3000/api/posts
-Authorization: Bearer <YOUR_TOKEN>
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MzgxLCJyb2xlIjoiYWRtaW4iLCJpYXQiOjE3MzM4NTk5MzksImV4cCI6MTczMzg2MzUzOX0._okx76GHbgavv60G-qqG2JgJ6vJ1yA1KAUh7ympacOc
 Content-Type: application/json
 
 {
-  "title": "My First Post",
+  "title": "My second Post",
   "content": "This is the content of my first post",
   "authorId": 381
 }
 
 ### Posts - Ver todos los posts
 GET http://localhost:3000/api/posts
-Authorization: Bearer <YOUR_TOKEN>
-Content-Type: application/json
-
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MzgxLCJyb2xlIjoiYWRtaW4iLCJpYXQiOjE3MzM5MDcwNzIsImV4cCI6MTczMzkxMDY3Mn0.7_kqqfQLU8mydkppNwAL-oiKhsR-IcQi_MszXvihFZA
 ### Posts - Ver un post por ID
 GET http://localhost:3000/api/posts/40
-Authorization: Bearer <YOUR_TOKEN>
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MzgxLCJyb2xlIjoiYWRtaW4iLCJpYXQiOjE3MzM5MDcwNzIsImV4cCI6MTczMzkxMDY3Mn0.7_kqqfQLU8mydkppNwAL-oiKhsR-IcQi_MszXvihFZA
 Content-Type: application/json
 
 ### Posts - Actualizar un post por ID
@@ -94,7 +92,8 @@ Content-Type: application/json
 
 {
   "title": "Updated Post Title",
-  "content": "Updated content of the post"
+  "content": "Updated content of the post",
+   "authorId": 381
 }
 
 ### Posts - Eliminar un post por ID
@@ -109,16 +108,16 @@ Content-Type: application/json
 
 ### Likes - Crear un like
 POST http://localhost:3000/api/likes
-Authorization: Bearer <YOUR_TOKEN>
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MzgxLCJyb2xlIjoiYWRtaW4iLCJpYXQiOjE3MzM5MDcwNzIsImV4cCI6MTczMzkxMDY3Mn0.7_kqqfQLU8mydkppNwAL-oiKhsR-IcQi_MszXvihFZA
 Content-Type: application/json
 
 {
-  "postId": 44
+  "postId": 45
 }
 
 ### Likes - Eliminar un like
 DELETE http://localhost:3000/api/likes
-Authorization: Bearer <YOUR_TOKEN>
+Authorization: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MzgxLCJyb2xlIjoiYWRtaW4iLCJpYXQiOjE3MzM5MDcwNzIsImV4cCI6MTczMzkxMDY3Mn0.7_kqqfQLU8mydkppNwAL-oiKhsR-IcQi_MszXvihFZA
 Content-Type: application/json
 
 {
@@ -127,12 +126,12 @@ Content-Type: application/json
 
 ### Likes - Contar likes de un post
 GET http://localhost:3000/api/likes/count/44
-Authorization: Bearer <YOUR_TOKEN>
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MzgxLCJyb2xlIjoiYWRtaW4iLCJpYXQiOjE3MzM5MDcwNzIsImV4cCI6MTczMzkxMDY3Mn0.7_kqqfQLU8mydkppNwAL-oiKhsR-IcQi_MszXvihFZA
 Content-Type: application/json
 
 ### Posts - Detalles adicionales de posts
 GET http://localhost:3000/api/posts/details
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MzgyLCJyb2xlIjoiYWRtaW4iLCJpYXQiOjE3MzM1OTI2NDAsImV4cCI6MTczMzU5NjI0MH0.cO8RpiYxX_53PoByYRlwKwAKCLasIa6r9DdujnHSYRE
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MzgxLCJyb2xlIjoiYWRtaW4iLCJpYXQiOjE3MzM5MDcwNzIsImV4cCI6MTczMzkxMDY3Mn0.7_kqqfQLU8mydkppNwAL-oiKhsR-IcQi_MszXvihFZA
 Content-Type: application/json
 
 

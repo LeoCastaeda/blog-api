@@ -19,9 +19,7 @@ export class PostRepository implements IPostRepository {
     });
   }
 
-  /**
-   * Buscar un post por ID.
-   */
+ 
   async findById(id: number): Promise<Post | null> {
     const post = await prisma.post.findUnique({
       where: { id },
@@ -39,9 +37,7 @@ export class PostRepository implements IPostRepository {
       : null;
   }
 
-  /**
-   * Buscar todos los posts no eliminados.
-   */
+  
   async findAll(): Promise<Post[]> {
     const posts = await prisma.post.findMany({
       where: { deleted: false },
@@ -59,9 +55,7 @@ export class PostRepository implements IPostRepository {
     );
   }
 
-  /**
-   * Buscar posts por un usuario específico.
-   */
+  
   async findUserPosts(userId: number): Promise<Post[]> {
     const posts = await prisma.post.findMany({
       where: { authorId: userId, deleted: false },
@@ -79,9 +73,7 @@ export class PostRepository implements IPostRepository {
     );
   }
 
-  /**
-   * Buscar un post, incluyendo los eliminados.
-   */
+  
   async findByIdIncludingDeleted(id: number): Promise<Post | null> {
     const post = await prisma.post.findUnique({
       where: { id },
@@ -99,9 +91,7 @@ export class PostRepository implements IPostRepository {
       : null;
   }
 
-  /**
-   * Actualizar un post existente.
-   */
+  
   async update(post: Post): Promise<boolean> {
     try {
       await prisma.post.update({
@@ -118,9 +108,6 @@ export class PostRepository implements IPostRepository {
     }
   }
 
-  /**
-   * Eliminar un post de manera lógica (soft delete).
-   */
   async softDelete(id: number): Promise<void> {
     await prisma.post.update({
       where: { id },
@@ -131,9 +118,7 @@ export class PostRepository implements IPostRepository {
     });
   }
 
-  /**
-   * Recuperar un post eliminado.
-   */
+
   async recover(id: number): Promise<void> {
     await prisma.post.update({
       where: { id },
@@ -144,9 +129,7 @@ export class PostRepository implements IPostRepository {
     });
   }
 
-  /**
-   * Buscar todos los posts con detalles adicionales.
-   */
+ 
   async findAllWithDetails(): Promise<any[]> {
     const posts = await prisma.post.findMany({
       where: { deleted: false },
@@ -167,7 +150,7 @@ export class PostRepository implements IPostRepository {
       createdAt: post.createdAt,
       updatedAt: post.updatedAt,
       likes: post._count.likes,
-      totalUsers, // Incluye total de usuarios para calcular popularidad
+      totalUsers,  
     }));
   }
 }
