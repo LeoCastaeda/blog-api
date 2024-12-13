@@ -79,7 +79,7 @@ export class User {
 
     this.props.username = arg0.username;
     this.props.email = arg0.email;
-    this.props.password = arg0.password; // Password should be hashed in the application layer
+    this.props.password = arg0.password;  
     this.props.role = arg0.role;
     this.props.banned = arg0.banned;
     this.updateUpdatedAt(new Date());
@@ -94,7 +94,7 @@ export class User {
 
   public updatePassword(newPassword: string) {
     if (!newPassword) throw new Error("Password is required");
-    this.props.password = newPassword; // Password should be hashed in the application layer
+    this.props.password = newPassword;  
     this.updateUpdatedAt(new Date());
     DomainEvents.dispatch(new UserPasswordUpdated(this.props.id, newPassword));
   }
