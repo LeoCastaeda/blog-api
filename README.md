@@ -11,13 +11,12 @@ Este proyecto es un backend para un sistema de blogs que permite a los usuarios 
 ### Tecnologías necesarias
 - **Node.js** v16+
 - **MySQL** 
-- **npm** o **yarn**
-- **Swagger**
-
+- **npm**  
+- **Jest**
 ### Instalación
 1. Clona este repositorio:
    ```bash
-   git clone <repositorio-url>
+   git clone https://github.com/LeoCastaeda/blog-api
    cd blog-api
    ```
 2. Instala las dependencias:

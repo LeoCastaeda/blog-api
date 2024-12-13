@@ -14,7 +14,7 @@ POST http://localhost:3000/api/auth/login
 Content-Type: application/json
 
 {
-  "email": "lulu1@example.com",
+  "email": "olas@api.com",
   "password": "12345"
 }
 
@@ -80,10 +80,9 @@ Content-Type: application/json
 ### Posts - Ver todos los posts
 GET http://localhost:3000/api/posts
 Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MzgxLCJyb2xlIjoiYWRtaW4iLCJpYXQiOjE3MzM5MDcwNzIsImV4cCI6MTczMzkxMDY3Mn0.7_kqqfQLU8mydkppNwAL-oiKhsR-IcQi_MszXvihFZA
-### Posts - Ver un post por ID
-GET http://localhost:3000/api/posts/40
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MzgxLCJyb2xlIjoiYWRtaW4iLCJpYXQiOjE3MzM5MDcwNzIsImV4cCI6MTczMzkxMDY3Mn0.7_kqqfQLU8mydkppNwAL-oiKhsR-IcQi_MszXvihFZA
-Content-Type: application/json
+### Posts - Ver un post por ID de autor
+GET http://localhost:3000/api/posts/author/6
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6Niwicm9sZSI6ImFkbWluIiwiaWF0IjoxNzM0MDU0MzMyLCJleHAiOjE3MzQwNTc5MzJ9.lRBZdGTB1uyvJu-O4ssBkbxzi3n2wz95GJugxje0e_0
 
 ### Posts - Actualizar un post por ID
 PUT http://localhost:3000/api/posts/40

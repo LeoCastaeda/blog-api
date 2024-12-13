@@ -2,14 +2,17 @@ import React from "react";
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 import { AuthProvider } from "./context/AuthProvider";
 import ProtectedRoute from "./components/Shared/ProtectedRoute";
-import AdminRoute from "./components/AdminRoute";  
+import AdminRoute from "./components/AdminRoute";
 import Navbar from "./components/Shared/Navbar";
 import Home from "./pages/Home";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
 import UserProfile from "./pages/UserProfile";
+import EditProfile from "./components/EditProfile";
+import ManagePosts from "./components/ManagePosts";
 import PostDetails from "./pages/PostDetails";
-import AdminUsers from "./pages/adminUser";  
+import AdminUsers from "./pages/AdminUser";
+import AuthorPostsPage from "./pages/AuthorPosts";  
 import Error404 from "./pages/Error404";
 
 const AppRoutes: React.FC = () => {
@@ -38,14 +41,38 @@ const AppRoutes: React.FC = () => {
               }
             />
             <Route
-              path="/posts/:id"
+              path="/profile/edit"
+              element={
+                <ProtectedRoute>
+                  <EditProfile />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/profile/posts"
+              element={
+                <ProtectedRoute>
+                  <ManagePosts />
+                </ProtectedRoute>
+              }
+            />
+           
+            <Route
+              path="/profile/authors/:authorId/posts"
+              element={
+                <ProtectedRoute>
+                  <AuthorPostsPage />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/posts/:postId"
               element={
                 <ProtectedRoute>
                   <PostDetails />
                 </ProtectedRoute>
               }
             />
-            {/* Ruta para administración de usuarios */}
             <Route
               path="/admin/users"
               element={
@@ -63,4 +90,7 @@ const AppRoutes: React.FC = () => {
 };
 
 export default AppRoutes;
+
+
+
 

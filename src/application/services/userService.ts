@@ -61,14 +61,14 @@ export class UserService {
     return this.updateUserData(userId, updates);
   }
 
-   
   async updateUserData(userId: number, newData: Partial<UserProps>) {
     const user = await this.userRepository.findById(userId);
     if (!user) {
-      throw new Error("User not found");
+      throw new Error(`User with ID ${userId} not found`);
     }
 
-    return this.userRepository.update(user, newData);
+    const updatedUser = await this.userRepository.update(user, newData);
+    return updatedUser;  
   }
 
    

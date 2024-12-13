@@ -27,7 +27,7 @@ const PostDetails: React.FC = () => {
       }
 
       try {
-        const data = await apiClient(`/api/posts/${id}`, { method: "GET" });
+        const data = await apiClient(`apiposts/${id}`, { method: "GET" });
         setPost(data);
       } catch (err: any) {
         setError(err.message || "Error al cargar la publicación");

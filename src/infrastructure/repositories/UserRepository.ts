@@ -15,6 +15,31 @@ function mapRoleToPrismaRole(role: CustomRole): PrismaRole {
 
 export class UserRepository implements IUserRepository {
   
+  async update(user: User, newData: Partial<UserProps>): Promise<void> {
+    
+    const filteredData = Object.fromEntries(
+      Object.entries({
+        ...newData,
+        role: newData.role ? mapRoleToPrismaRole(newData.role) : undefined,
+      }).filter(([, value]) => value !== undefined)
+    );
+
+     
+    await prisma.user.update({
+      where: { id: user.id },
+      
+      data: filteredData,
+    });
+  }
+
+   
+  async updateEmail(userId: number, newEmail: string): Promise<void> {
+    await prisma.user.update({
+      where: { id: userId },
+      data: { email: newEmail },
+    });
+  }
+   
   async create(userProps: UserProps): Promise<User> {
     const user = await prisma.user.create({
       data: {
@@ -39,21 +64,32 @@ export class UserRepository implements IUserRepository {
     });
   }
 
-  
-  async updateUser(userId: number, newData: Partial<UserProps>): Promise<void> {
-    const updateData = {
-      ...newData,
-      role: newData.role ? mapRoleToPrismaRole(newData.role) : undefined,
-    };
-
-    // Filtrar campos undefined
+   
+  async updateUser(userId: number, newData: Partial<UserProps>): Promise<User> {
+    
     const filteredData = Object.fromEntries(
-      Object.entries(updateData).filter(([, value]) => value !== undefined)
+      Object.entries({
+        ...newData,
+        role: newData.role ? mapRoleToPrismaRole(newData.role) : undefined,
+      }).filter(([, value]) => value !== undefined)
     );
 
-    await prisma.user.update({
+    
+    const updatedUser = await prisma.user.update({
       where: { id: userId },
       data: filteredData,
+    });
+
+    
+    return User.with({
+      id: updatedUser.id,
+      username: updatedUser.username,
+      email: updatedUser.email,
+      password: updatedUser.password,
+      role: mapPrismaRoleToRole(updatedUser.role),
+      banned: updatedUser.banned,
+      createdAt: updatedUser.createdAt,
+      updatedAt: updatedUser.updatedAt,
     });
   }
 
@@ -91,6 +127,7 @@ export class UserRepository implements IUserRepository {
       : null;
   }
 
+   
   async save(user: User): Promise<void> {
     await prisma.user.update({
       where: { id: user.id },
@@ -106,6 +143,7 @@ export class UserRepository implements IUserRepository {
     });
   }
 
+   
   async findAll(): Promise<User[]> {
     const users = await prisma.user.findMany();
     return users.map(user =>
@@ -122,7 +160,7 @@ export class UserRepository implements IUserRepository {
     );
   }
 
-  
+   
   async findById(id: number): Promise<User | null> {
     const user = await prisma.user.findUnique({ where: { id } });
     return user
@@ -139,7 +177,7 @@ export class UserRepository implements IUserRepository {
       : null;
   }
 
-  
+   
   async delete(id: number): Promise<void> {
     await prisma.user.delete({ where: { id } });
   }
@@ -152,7 +190,7 @@ export class UserRepository implements IUserRepository {
     });
   }
 
-  
+ 
   async unbanUser(userId: number): Promise<void> {
     await prisma.user.update({
       where: { id: userId },
@@ -164,25 +202,7 @@ export class UserRepository implements IUserRepository {
   async countUsers(): Promise<number> {
     return prisma.user.count();
   }
-  async update(user: User, newData: Partial<User>): Promise<void> {
-    // Implementación de actualización usando Prisma
-    const filteredData = Object.fromEntries(
-      Object.entries(newData).filter(([, value]) => value !== undefined)
-    );
-
-    await prisma.user.update({
-      where: { id: user.id },
-      data: filteredData,
-    });
-  }
-
-  async updateEmail(userId: number, newEmail: string): Promise<void> {
-    // Implementación para actualizar solo el email
-    await prisma.user.update({
-      where: { id: userId },
-      data: { email: newEmail },
-    });
-  }
 }
+
 
 export default UserRepository;

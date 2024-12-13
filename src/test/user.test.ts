@@ -143,13 +143,16 @@ it('should return 400 for invalid user ID', async () => {
         const updatedUser = { id: 1, username: 'test', email: 'ZL6Z7@example.com', password: 'testpassword' };
         (UserService.prototype.updateUserProfile as jest.Mock).mockResolvedValue(updatedUser);
         req.params = { id: '1' };
-        req.user = { id: 1, role: 'admin' }; // Ensure the user is authorized
+        req.user = { id: 1, role: 'admin' };  
         req.body = { username: 'test', email: 'ZL6Z7@example.com', password: 'testpassword' };
         await userController.updateUserProfile(req, res);    
         expect(res.status).toHaveBeenCalledTimes(1);
         expect(res.status).toHaveBeenCalledWith(200);    
         expect(res.json).toHaveBeenCalledTimes(1);    
-        expect(res.json).toHaveBeenCalledWith(updatedUser);    
+        expect(res.json).toHaveBeenCalledWith({
+          message: 'User profile updated successfully',
+          data: updatedUser, 
+      });
     });
     it('should return 403 for non-admin role', async () => {
         req.user = { id: 1, role: 'user' };

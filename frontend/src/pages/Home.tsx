@@ -27,7 +27,7 @@ const Home: React.FC = () => {
       try {
         const data = await apiClient("/api/posts/details");
         setPosts(data);
-      } catch (err: any) {
+      } catch {
         setError("Error al cargar las publicaciones.");
       } finally {
         setLoading(false);
@@ -37,36 +37,51 @@ const Home: React.FC = () => {
     fetchPosts();
   }, [user]);
 
-  const handleLikeToggle = async (postId: number, likedByUser: boolean) => {
+  const handleLike = async (postId: number) => {
     try {
-      const method = likedByUser ? "DELETE" : "POST";
-      const response = await apiClient("/api/likes", {
-        method,
-        body: JSON.stringify({ postId }),
+      const response = await apiClient(`/api/likes`, {
+        method: "POST",
+        body: JSON.stringify({ postId })
       });
-  
-      const data = await response;
-  
       setPosts((prevPosts) =>
         prevPosts.map((post) =>
           post.id === postId
-            ? {
-                ...post,
-                likedByUser: !likedByUser,
-                likes: likedByUser ? post.likes - 1 : post.likes + 1,
-              }
+            ? { ...post, likedByUser: true, likes: post.likes + 1 }
             : post
         )
       );
-  
-      setSuccessMessage(data.message || "Operación realizada con éxito.");
+      setSuccessMessage(response.message || "Like agregado con éxito.");
       setTimeout(() => setSuccessMessage(null), 3000);
-    } catch (err: any) {
-      setError("Error al gestionar el like.");
+    } catch (error: any) {
+      if (error.message === "Ya tiene un like") {
+        setSuccessMessage("Ya diste like a este post.");
+      } else {
+        setError("Error al dar like al post.");
+      }
+      setTimeout(() => {
+        setSuccessMessage(null);
+        setError(null);
+      }, 3000);
+    }
+  };
+
+  const handleUnlike = async (postId: number) => {
+    try {
+      await apiClient(`/api/likes`, { method: "DELETE", body: JSON.stringify({ postId }) });
+      setPosts((prevPosts) =>
+        prevPosts.map((post) =>
+          post.id === postId
+            ? { ...post, likedByUser: false, likes: post.likes - 1 }
+            : post
+        )
+      );
+      setSuccessMessage("Like eliminado con éxito.");
+      setTimeout(() => setSuccessMessage(null), 3000);
+    } catch {
+      setError("Error al quitar el like del post.");
       setTimeout(() => setError(null), 3000);
     }
   };
-  
 
   const sortedPosts = posts.sort((a, b) => {
     switch (sortCriteria) {
@@ -124,7 +139,11 @@ const Home: React.FC = () => {
                 <small>
                   Creado el: {new Date(post.createdAt).toLocaleString()}
                 </small>
-                <button onClick={() => handleLikeToggle(post.id, post.likedByUser)}>
+                <button
+                  onClick={() =>
+                    post.likedByUser ? handleUnlike(post.id) : handleLike(post.id)
+                  }
+                >
                   {post.likedByUser ? "👎 Unlike" : "👍 Like"}
                 </button>
               </li>
@@ -137,6 +156,8 @@ const Home: React.FC = () => {
 };
 
 export default Home;
+
+
 
 
 

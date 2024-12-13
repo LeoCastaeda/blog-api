@@ -1,50 +1,127 @@
-# React + TypeScript + Vite
+# Frontend Application
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+## 📋 Descripción
 
-Currently, two official plugins are available:
+Este proyecto es la interfaz de usuario de una aplicación basada en React que permite a los usuarios gestionar publicaciones, editar perfiles y realizar otras acciones relacionadas con la administración de contenidos.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+## 🚀 Características
 
-## Expanding the ESLint configuration
+- **Gestión de usuarios**: Inicio de sesión, registro, edición de perfiles.
+- **Publicaciones**: Crear, editar, eliminar y listar publicaciones.
+- **Protección de rutas**: Acceso limitado según autenticación y roles.
+- **Integración con API**: Consume endpoints protegidos con JWT.
 
-If you are developing a production application, we recommend updating the configuration to enable type aware lint rules:
+---
 
-- Configure the top-level `parserOptions` property like this:
+## 📦 Instalación
 
-```js
-export default tseslint.config({
-  languageOptions: {
-    // other options...
-    parserOptions: {
-      project: ['./tsconfig.node.json', './tsconfig.app.json'],
-      tsconfigRootDir: import.meta.dirname,
-    },
-  },
-})
+Sigue estos pasos para instalar y ejecutar el proyecto localmente.
+
+### Prerrequisitos
+
+- **Node.js**: Asegúrate de tener instalado [Node.js](https://nodejs.org/).
+- **npm**: Gestor de paquetes.
+
+### Instalación
+
+1. Clona este repositorio:
+
+   ```bash
+   git clone https://github.com/LeoCastaeda/blog-api
+   cd tu-repositorio
+   ```
+
+2. Instala las dependencias:
+
+   ```bash
+   npm install
+  
+   ```
+
+3. Configura las variables de entorno:
+
+   Crea un archivo `.env` en la raíz del proyecto y añade la siguiente configuración:
+
+   ```env
+   REACT_APP_API_BASE_URL=http://localhost:5173/api
+   ```
+
+---
+
+## 🔧 Scripts Disponibles
+
+En el directorio del proyecto, puedes ejecutar:
+
+### `npm start` 
+
+Inicia la aplicación en modo de desarrollo.  
+Abre [http://localhost:3000](http://localhost:3000) para verlo en tu navegador.
+
+### `npm run dev` 
+
+Inicia la aplicación en modo de desarrollo.  
+Abre [http://localhost:5173](http://localhost:5173) para verlo en tu navegador.
+
+
+## 🛠️ Tecnologías Utilizadas
+
+- **React-vite ts**: Entorno de desarrollo rápido para aplicaciones React con TypeScript.
+- **React**: Biblioteca principal para la interfaz de usuario.
+- **TypeScript**: Mejora de tipado y mantenimiento del código.
+- **React Router**: Navegación entre páginas.
+- **Fetch**: Para la comunicación con la API.
+
+
+---
+
+## 📂 Estructura del Proyecto
+
+```
+📦 src
+ ┣ 📂api
+ ┃ ┗ client.ts  # Configuración del cliente API
+ ┣ 📂components
+ ┃ ┣ 📂Shared   # Componentes comunes como Footer,Navbar
+ ┃ ┗ EditProfile.tsx  # Componente para editar el perfil
+ ┃ ┗  AdminRoute.tsx  # Componente para manejo de AdminUser
+ ┃ ┗  ManagePost.tsx  #Componente para manejo de las publicaciones
+ ┣ 📂context
+ ┃ ┗ AuthProvider.tsx  # Contexto para la autenticación
+ ┣ 📂pages
+ ┃ ┣ Home.tsx    # Página principal
+ ┃ ┣ Login.tsx   # Página de inicio de sesión
+ ┃ ┣ AdminUser.tsx
+ ┃ ┣ AuthorUser.tsx
+ ┃ ┣ Error404.tsx
+ ┃ ┣ UserProfile.tsx
+ ┃ ┗ Register.tsx  # Página de registro
+ ┣ appRoutes.tsx
+ ┗ main.tsx      # Punto de entrada principal
 ```
 
-- Replace `tseslint.configs.recommended` to `tseslint.configs.recommendedTypeChecked` or `tseslint.configs.strictTypeChecked`
-- Optionally add `...tseslint.configs.stylisticTypeChecked`
-- Install [eslint-plugin-react](https://github.com/jsx-eslint/eslint-plugin-react) and update the config:
+---
 
-```js
-// eslint.config.js
-import react from 'eslint-plugin-react'
+## 🔐 Seguridad
 
-export default tseslint.config({
-  // Set the react version
-  settings: { react: { version: '18.3' } },
-  plugins: {
-    // Add the react plugin
-    react,
-  },
-  rules: {
-    // other rules...
-    // Enable its recommended rules
-    ...react.configs.recommended.rules,
-    ...react.configs['jsx-runtime'].rules,
-  },
-})
-```
+- **Autenticación JWT**: Cada solicitud protegida requiere un token en el encabezado `Authorization`.
+- **Roles de Usuario**: Las rutas están protegidas según los roles.
+
+---
+
+## 📄 Licencia
+
+Este proyecto está bajo la licencia MIT. Consulta el archivo [LICENSE](./LICENSE) para más detalles.
+
+---
+
+## 👥 Contribuciones
+
+¡Contribuciones, issues y solicitudes de funciones son bienvenidas!  
+Siéntete libre de abrir un issue o enviar un pull request.
+
+---
+
+## 📧 Contacto
+
+Si tienes alguna pregunta o necesitas ayuda, puedes contactarme en [leocastaeda11@gmail.com](mailto:leocastaeda11@gmail.com).
+

@@ -78,7 +78,10 @@ export class UserController {
   
       
   
-      res.status(200).json(updatedUser);
+      res.status(200).json({ 
+        message: "User profile updated successfully",
+        data: updatedUser,
+      });
     } catch (error) {
       
       res.status(500).json({ error: "Failed to update user profile" });

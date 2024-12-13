@@ -173,6 +173,63 @@ postRouter.delete('/:id', authenticateJWT, authorizationMiddleware('delete_post'
  *         description: Post recovered successfully
  */
 postRouter.post('/:id/recover', authenticateJWT, authorizationMiddleware('recover_post'), postController.recoverPost.bind(postController));
+/**
+ * @swagger
+ * /api/posts/author/{authorId}:
+ *   get:
+ *     summary: Get posts by author ID
+ *     tags: 
+ *       - Posts
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: author
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: The author's name or identifier
+ *       - in: path
+ *         name: authorId
+ *         required: true
+ *         schema:
+ *           type: integer
+ *         description: The ID of the author
+ *     responses:
+ *       200:
+ *         description: The posts data
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
+ *               items:
+ *                 type: object
+ *                 properties:
+ *                   id:
+ *                     type: number
+ *                     description: The post ID
+ *                   title:
+ *                     type: string
+ *                     description: The post title
+ *                   content:
+ *                     type: string
+ *                     description: The post content
+ *                   createdAt:
+ *                     type: string
+ *                     format: date-time
+ *                     description: When the post was created
+ *                   updatedAt:
+ *                     type: string
+ *                     format: date-time
+ *                     description: When the post was last updated
+ *       404:
+ *         description: Author not found
+ *       500:
+ *         description: Internal server error
+ */
+postRouter.get('/:author/:authorId', authenticateJWT, authorizationMiddleware('read_post'), postController.getAuthorPosts.bind(postController));
+
+ 
 
 export default postRouter;
 
