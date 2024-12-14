@@ -8,6 +8,7 @@ interface Post {
   authorId: number;
   createdAt: string;
   updatedAt: string;
+  deleted?: boolean;
 }
 
 interface AuthorPostsPageProps {
@@ -55,7 +56,6 @@ const AuthorPostsPage: React.FC<AuthorPostsPageProps> = ({ authorId }) => {
           body: JSON.stringify(editingPost),
         });
 
-        // Actualizar el post en el estado local
         setPosts((prevPosts) =>
           prevPosts.map((post) =>
             post.id === editingPost.id ? editingPost : post
@@ -72,6 +72,34 @@ const AuthorPostsPage: React.FC<AuthorPostsPageProps> = ({ authorId }) => {
 
   const handleCancel = () => {
     setEditingPost(null);
+  };
+
+  const handleDelete = async (postId: number) => {
+    try {
+      await apiClient(`/api/posts/${postId}`, { method: "DELETE" });
+      setPosts((prevPosts) =>
+        prevPosts.map((post) =>
+          post.id === postId ? { ...post, deleted: true } : post
+        )
+      );
+    } catch (err) {
+      console.error(err);
+      setError("Error al eliminar la publicación.");
+    }
+  };
+
+  const handleRecover = async (postId: number) => {
+    try {
+      await apiClient(`/api/posts/${postId}/recover`, { method: "POST" });
+      setPosts((prevPosts) =>
+        prevPosts.map((post) =>
+          post.id === postId ? { ...post, deleted: false } : post
+        )
+      );
+    } catch (err) {
+      console.error(err);
+      setError("Error al recuperar la publicación.");
+    }
   };
 
   if (loading) return <p>Cargando publicaciones...</p>;
@@ -105,7 +133,14 @@ const AuthorPostsPage: React.FC<AuthorPostsPageProps> = ({ authorId }) => {
               <>
                 <h3>{post.title}</h3>
                 <p>{post.content}</p>
-                <button onClick={() => handleEdit(post)}>Editar</button>
+                {!post.deleted ? (
+                  <>
+                    <button onClick={() => handleEdit(post)}>Editar</button>
+                    <button onClick={() => handleDelete(post.id)}>Eliminar</button>
+                  </>
+                ) : (
+                  <button onClick={() => handleRecover(post.id)}>Recuperar</button>
+                )}
               </>
             )}
           </div>
@@ -118,6 +153,4 @@ const AuthorPostsPage: React.FC<AuthorPostsPageProps> = ({ authorId }) => {
 };
 
 export default AuthorPostsPage;
-
-
 
