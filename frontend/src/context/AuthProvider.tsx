@@ -28,19 +28,27 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
 
   useEffect(() => {
     const savedToken = localStorage.getItem("authToken");
+    const savedUser = localStorage.getItem("authUser");
+
     if (savedToken) {
-      apiClient("/api/auth/me")
-        .then((response) => {
-          setToken(savedToken);
-          setUserState(response.user);
-          localStorage.setItem("authUser", JSON.stringify(response.user));
-        })
-        .catch(() => {
-          logout(); 
-        });
+      setToken(savedToken);
+  
+      if (savedUser) {
+        setUserState(JSON.parse(savedUser));
+      } else {
+        // Recupera los datos del usuario desde el backend
+        apiClient("/api/auth/me")
+          .then((userData) => {
+            setUserState(userData);
+            localStorage.setItem("authUser", JSON.stringify(userData));
+          })
+          .catch((err) => {
+            console.error("Error fetching user data:", err);
+            logout();
+          });
+      }
     }
   }, []);
-
   const setUser = (updatedUser: User | null) => {
     setUserState(updatedUser);
     if (updatedUser) {
@@ -67,6 +75,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     setToken(token);
     setUser(userData);
     localStorage.setItem("authToken", token);
+    localStorage.setItem("authUser", JSON.stringify(userData));
   };
 
   const logout = () => {

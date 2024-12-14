@@ -41,25 +41,22 @@ const Home: React.FC = () => {
     try {
       const response = await apiClient(`/api/likes`, {
         method: "POST",
-        body: JSON.stringify({ postId }),
+        body: JSON.stringify({ postId })
       });
-
-      if (response.message === "Ya has dado like a este post") {
+      if (response.message === "Ya tiene un like") {
         setSuccessMessage("Ya diste like a este post.");
-        setTimeout(() => setSuccessMessage(null), 3000);
-        return;
+      } else {
+        setPosts((prevPosts) =>
+          prevPosts.map((post) =>
+            post.id === postId
+              ? { ...post, likedByUser: true, likes: post.likes + 1 }
+              : post
+          )
+        );
+        setSuccessMessage("Like agregado con éxito.");
       }
-
-      setPosts((prevPosts) =>
-        prevPosts.map((post) =>
-          post.id === postId
-            ? { ...post, likedByUser: true, likes: post.likes + 1 }
-            : post
-        )
-      );
-      setSuccessMessage(response.message || "Like agregado con éxito.");
       setTimeout(() => setSuccessMessage(null), 3000);
-    } catch (error: any) {
+    } catch {
       setError("Error al dar like al post.");
       setTimeout(() => setError(null), 3000);
     }
@@ -67,10 +64,7 @@ const Home: React.FC = () => {
 
   const handleUnlike = async (postId: number) => {
     try {
-      await apiClient(`/api/likes`, {
-        method: "DELETE",
-        body: JSON.stringify({ postId }),
-      });
+      await apiClient(`/api/likes`, { method: "DELETE", body: JSON.stringify({ postId }) });
       setPosts((prevPosts) =>
         prevPosts.map((post) =>
           post.id === postId
