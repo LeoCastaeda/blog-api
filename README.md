@@ -106,6 +106,8 @@ Describe brevemente los modelos principales y sus relaciones.
 - `userId`: Relación con el usuario.
 
 ---
+![Diagrama del proyecto](frontend/src/assets/blog-api-mysql.png)
+
 
 ## Pruebas
 
