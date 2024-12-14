@@ -19,6 +19,11 @@ export class LikeController {
         res.status(400).json({ error: 'postId son requeridos' });
         return;
       }
+      const likeExists = await this.likeService.hasLiked({ userId, postId });
+      if (likeExists) {
+        res.status(200).json({ message: "Ya has dado like a este post" });
+        return;
+      }
 
      
       const like = await this.likeService.addLike({ userId, postId });
@@ -28,11 +33,9 @@ export class LikeController {
       });
     } catch (error) {
       
-      if (error instanceof Error && error.message === 'Ya has dado like a este post') {
-        res.status(409).json({ error: error.message });
-      } else {
+      
         res.status(500).json({ error: 'Error interno del servidor' });
-      }
+      
     }
   }
 

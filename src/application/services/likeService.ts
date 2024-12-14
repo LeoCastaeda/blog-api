@@ -17,6 +17,10 @@ export class LikeService {
     const like = Like.create(userId, postId);
     return this.likeRepository.save(like);
   }
+  async hasLiked({ userId, postId }: { userId: number; postId: number }): Promise<boolean> {
+    return this.likeRepository.hasLiked(userId, postId);
+  }
+  
 
   async removeLike(dto: LikePostDto): Promise<void> {
     const { userId, postId } = dto;

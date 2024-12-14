@@ -13,6 +13,16 @@ export class LikeRepository implements ILikeRepository {
     });
     return like ? Like.with(like) : null;
   }
+  async hasLiked(userId: number, postId: number): Promise<boolean> {
+    const like = await prisma.like.findFirst({
+      where: {
+        userId,
+        postId,
+        deleted: false,
+      },
+    });
+    return !!like;  
+  }
 
   async findById(id: number): Promise<Like | null> {
     const like = await prisma.like.findFirst({
