@@ -1,5 +1,5 @@
-import { LikePostDto } from '../../application/dtos/like-post.dto';
-import { CountLikesDto } from '../../application/dtos/count-likes.dto';
+import { LikePostDto } from '../dtos/like-post.dto';
+import { CountLikesDto } from '../dtos/count-likes.dto';
 import { LikeRepository } from '../../infrastructure/repositories/LikeRepository';
 import { Like } from '../../domain/entities/Like';
 

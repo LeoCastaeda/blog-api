@@ -97,8 +97,21 @@ postRouter.get('/:id', authenticateJWT, authorizationMiddleware('read_post'), po
  *       required: true
  *       content:
  *         application/json:
- *           schema:
- *             $ref: '#/components/schemas/PostInput'
+ *          schema:
+ *             type: object
+ *             properties:
+ *               title:
+ *                 type: string
+ *                 description: The title of the post
+ *                 example: "My second Post"
+ *               content:
+ *                 type: string
+ *                 description: The content of the post
+ *                 example: "This is the content of my second post"
+ *               authorId:
+ *                 type: integer
+ *                 description: The ID of the author
+ *                 example: 6
  *     responses:
  *       201:
  *         description: Post created successfully

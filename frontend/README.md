@@ -28,7 +28,7 @@ Sigue estos pasos para instalar y ejecutar el proyecto localmente.
 
    ```bash
    git clone https://github.com/LeoCastaeda/blog-api
-   cd tu-repositorio
+   cd frontend
    ```
 
 2. Instala las dependencias:
@@ -45,6 +45,28 @@ Sigue estos pasos para instalar y ejecutar el proyecto localmente.
    ```env
    REACT_APP_API_BASE_URL=http://localhost:5173/api
    ```
+
+4. Inicia el frontend en modo desarollo:
+
+   ```
+   npm start
+   ```
+
+  
+### Build de la Aplicación
+
+Para compilar el frontend para producción:
+
+1. Navega al directorio del frontend:
+
+   ```
+    cd frontend
+   ```
+2. Ejecuta el comando de build:
+
+   ```
+    npm run build
+   ```  
 
 ---
 
