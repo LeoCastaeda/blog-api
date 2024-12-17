@@ -28,8 +28,8 @@ export class PostService {
     return true;
   }
 
-  async getUserPosts(userId: number): Promise<Post[]> {
-    return this.postRepository.findUserPosts(userId);
+  async getUserPosts(authorId: number, includeDeleted: boolean = false): Promise<Post[]> {
+    return this.postRepository.findUserPosts(authorId, includeDeleted);
   }
 
   async deletePost(dto: PostActionDto): Promise<void> {

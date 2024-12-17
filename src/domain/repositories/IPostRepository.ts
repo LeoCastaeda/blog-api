@@ -5,7 +5,7 @@ export interface IPostRepository {
   findAll(): Promise<Post[]>;
   save(post: Post): Promise<void>;
   update(post: Post): Promise<boolean>;
-  findUserPosts(userId: number): Promise<Post[]>;
+  findUserPosts(userId: number, includeDeleted: boolean): Promise<Post[]>;
   findByIdIncludingDeleted(id: number): Promise<Post | null>;
   softDelete(id: number): Promise<void>;
   recover(id: number): Promise<void>;

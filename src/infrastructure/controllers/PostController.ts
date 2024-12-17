@@ -102,14 +102,17 @@ export class PostController {
   async getAuthorPosts(req: Request, res: Response): Promise<void> {
     try {
       const authorId = Number(req.params.authorId);
-      const posts = await this.postService.getUserPosts(authorId);
+      const includeDeleted = req.query.includeDeleted === "true"; 
+  
+      const posts = await this.postService.getUserPosts(authorId, includeDeleted);
+  
       res.status(200).json(posts);
-    } catch (error) { 
+    } catch (error) {
       res.status(500).json({
         error: error instanceof Error ? error.message : "Error al obtener los posts del autor",
       });
     }
-  } 
+  }
 
   
   async recoverPost(req: Request, res: Response): Promise<void> {

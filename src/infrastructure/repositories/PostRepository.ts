@@ -54,9 +54,12 @@ export class PostRepository implements IPostRepository {
   }
 
   
-  async findUserPosts(userId: number): Promise<Post[]> {
+  async findUserPosts(userId: number, includeDeleted: boolean = false): Promise<Post[]> {
     const posts = await prisma.post.findMany({
-      where: { authorId: userId, deleted: false },
+      where: { 
+        authorId: userId,
+        ...(includeDeleted ? {} : { deleted: false })  
+      },
     });
     return posts.map(post =>
       Post.with({

@@ -30,7 +30,7 @@ const AuthorPostsPage: React.FC<AuthorPostsPageProps> = ({ authorId }) => {
 
     const fetchAuthorPosts = async () => {
       try {
-        const response = await apiClient(`/api/posts/author/${authorId}`);
+        const response = await apiClient(`/api/posts/author/${authorId}?includeDeleted=true`);
         const data = response.map((item: { props: Post }) => item.props);
         setPosts(data);
       } catch (err) {
@@ -153,4 +153,5 @@ const AuthorPostsPage: React.FC<AuthorPostsPageProps> = ({ authorId }) => {
 };
 
 export default AuthorPostsPage;
+
 
