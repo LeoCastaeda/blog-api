@@ -107,7 +107,7 @@ postRouter.get('/:id', authenticateJWT, authorizationMiddleware('read_post'), po
  *               content:
  *                 type: string
  *                 description: The content of the post
- *                 example: "This is the content of my second post"
+ *                 example: "This is the content of my  post"
  *               authorId:
  *                 type: integer
  *                 description: The ID of the author
@@ -196,12 +196,6 @@ postRouter.post('/:id/recover', authenticateJWT, authorizationMiddleware('recove
  *     security:
  *       - bearerAuth: []
  *     parameters:
- *       - in: path
- *         name: author
- *         required: true
- *         schema:
- *           type: string
- *         description: The author's name or identifier
  *       - in: path
  *         name: authorId
  *         required: true

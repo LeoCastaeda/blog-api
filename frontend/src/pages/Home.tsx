@@ -37,7 +37,13 @@ const Home: React.FC = () => {
     fetchPosts();
   }, [user]);
 
-  const handleLike = async (postId: number) => {
+  const handleLike = async (postId: number, author: string) => {
+    if (user?.username === author) {
+      setError("No puedes dar like a tu propio post.");
+      setTimeout(() => setError(null), 3000);
+      return;
+    }
+
     try {
       const response = await apiClient(`/api/likes`, {
         method: "POST",
@@ -138,8 +144,11 @@ const Home: React.FC = () => {
                 </small>
                 <button
                   onClick={() =>
-                    post.likedByUser ? handleUnlike(post.id) : handleLike(post.id)
+                    post.likedByUser
+                      ? handleUnlike(post.id)
+                      : handleLike(post.id, post.author)
                   }
+                  disabled={user?.username === post.author}
                 >
                   {post.likedByUser ? "👎 Unlike" : "👍 Like"}
                 </button>

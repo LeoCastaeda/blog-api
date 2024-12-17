@@ -7,7 +7,7 @@ import authorizationMiddleware from "../infrastructure/middlewares/authorizeMidd
 
 const likeRouter = Router();
 
-// Instanciación de dependencias
+
 const likeRepository = new LikeRepository();
 const likeService = new LikeService(likeRepository);
 const likeController = new LikeController(likeService);

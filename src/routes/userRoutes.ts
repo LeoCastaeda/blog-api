@@ -7,7 +7,7 @@ import { UserService } from "../application/services/userService";
 
 const userRoutes = Router();
 
-// Crear las instancias necesarias
+
 const userRepository = new UserRepository();
 const userService = new UserService(userRepository);
 const userController = new UserController(userService);

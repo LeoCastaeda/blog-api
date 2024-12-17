@@ -3,7 +3,7 @@ import { PostController } from '../infrastructure/controllers/PostController';
 import { PostService } from '../application/services/postService';
 import { IPostRepository } from '../domain/repositories/IPostRepository';
 import { Post } from '../domain/entities/Post';
-import { Role } from '../domain/entities/Role'; // Add this import
+import { Role } from '../domain/entities/Role';  
 import { PostActionDto } from '../application/dtos/postAction.dto';
 
 describe('PostController', () => {
@@ -16,7 +16,7 @@ describe('PostController', () => {
     beforeEach(() => {
       const postRepository = {
         findById: jest.fn().mockResolvedValue(null),
-      } as unknown as IPostRepository; // Mock or create an instance of IPostRepository
+      } as unknown as IPostRepository;  
       postService = new PostService(postRepository);
       postController = new PostController(postService);
       req = {
@@ -91,7 +91,7 @@ describe('PostController', () => {
         
         const post1 = Post.create('Test Post', 'Test Content', 1);
         jest.spyOn(postService, 'getPostById').mockResolvedValue(post1);
-        req.params = { id: '1' }; // Set up the req.params object correctly
+        req.params = { id: '1' };  
         await postController.getPostById(req, res);
         expect(res.status).toHaveBeenCalledTimes(1);
         expect(res.status).toHaveBeenCalledWith(200);
@@ -100,7 +100,7 @@ describe('PostController', () => {
       });
       it('should return 404 when post not found by ID', async () => {
         jest.spyOn(postService, 'getPostById').mockResolvedValue(null);
-        req.params = { id: '1' }; // Ensure req.params is defined
+        req.params = { id: '1' };  
         await postController.getPostById(req, res);
         expect(res.status).toHaveBeenCalledTimes(1);
         expect(res.status).toHaveBeenCalledWith(404);
@@ -218,7 +218,7 @@ describe('PostController', () => {
         beforeEach(() => {
           const postRepository = {
             findById: jest.fn().mockResolvedValue(null),
-          } as unknown as IPostRepository; // Mock or create an instance of IPostRepository
+          } as unknown as IPostRepository;  
           postService = new PostService(postRepository);
           postController = new PostController(postService);
           req = {
@@ -300,7 +300,7 @@ describe('PostController', () => {
         const userId = 2;
         req.params = { id: postId.toString() };
         req.user = { id: userId, role: 'someRole' as Role };
-        jest.spyOn(postService, 'recoverPost').mockResolvedValue(); // Mock the recoverPost method to resolve without throwing an error
+        jest.spyOn(postService, 'recoverPost').mockResolvedValue();  
         await postController.recoverPost(req, res);
         expect(res.status).toHaveBeenCalledTimes(1);
         expect(res.status).toHaveBeenCalledWith(200);
@@ -327,7 +327,7 @@ describe('PostController', () => {
       let req: Request;
       let res: Response;
       beforeEach(() => {
-        const postRepository = {} as IPostRepository; // Mock or create an instance of IPostRepository
+        const postRepository = {} as IPostRepository;  
         postService = new PostService(postRepository);
         postController = new PostController(postService);
         req = {} as Request;
