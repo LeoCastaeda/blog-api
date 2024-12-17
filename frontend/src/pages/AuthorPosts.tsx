@@ -21,32 +21,33 @@ const AuthorPostsPage: React.FC<AuthorPostsPageProps> = ({ authorId }) => {
   const [error, setError] = useState<string | null>(null);
   const [editingPost, setEditingPost] = useState<Post | null>(null);
 
+  const fetchAuthorPosts = async () => {
+    setLoading(true);
+    try {
+      const response = await apiClient(
+        `/api/posts/author/${authorId}?includeDeleted=true`
+      );
+      const data = response.map((item: { props: Post }) => item.props);
+      setPosts(data);
+      setError(null);
+    } catch (err) {
+      console.error(err);
+      setError("Error al cargar las publicaciones del autor.");
+    } finally {
+      setLoading(false);
+    }
+  };
+
   useEffect(() => {
-    if (!authorId) {
+    if (authorId) {
+      fetchAuthorPosts();
+    } else {
       setError("ID de autor no disponible.");
       setLoading(false);
-      return;
     }
-
-    const fetchAuthorPosts = async () => {
-      try {
-        const response = await apiClient(`/api/posts/author/${authorId}?includeDeleted=true`);
-        const data = response.map((item: { props: Post }) => item.props);
-        setPosts(data);
-      } catch (err) {
-        console.error(err);
-        setError("Error al cargar las publicaciones del autor.");
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchAuthorPosts();
   }, [authorId]);
 
-  const handleEdit = (post: Post) => {
-    setEditingPost(post);
-  };
+  const handleEdit = (post: Post) => setEditingPost(post);
 
   const handleSave = async () => {
     if (editingPost) {
@@ -55,13 +56,7 @@ const AuthorPostsPage: React.FC<AuthorPostsPageProps> = ({ authorId }) => {
           method: "PUT",
           body: JSON.stringify(editingPost),
         });
-
-        setPosts((prevPosts) =>
-          prevPosts.map((post) =>
-            post.id === editingPost.id ? editingPost : post
-          )
-        );
-
+        fetchAuthorPosts();
         setEditingPost(null);
       } catch (err) {
         console.error(err);
@@ -70,15 +65,13 @@ const AuthorPostsPage: React.FC<AuthorPostsPageProps> = ({ authorId }) => {
     }
   };
 
-  const handleCancel = () => {
-    setEditingPost(null);
-  };
+  const handleCancel = () => setEditingPost(null);
 
   const handleDelete = async (postId: number) => {
     try {
       await apiClient(`/api/posts/${postId}`, { method: "DELETE" });
-      setPosts((prevPosts) =>
-        prevPosts.map((post) =>
+      setPosts(prevPosts =>
+        prevPosts.map(post =>
           post.id === postId ? { ...post, deleted: true } : post
         )
       );
@@ -91,8 +84,8 @@ const AuthorPostsPage: React.FC<AuthorPostsPageProps> = ({ authorId }) => {
   const handleRecover = async (postId: number) => {
     try {
       await apiClient(`/api/posts/${postId}/recover`, { method: "POST" });
-      setPosts((prevPosts) =>
-        prevPosts.map((post) =>
+      setPosts(prevPosts =>
+        prevPosts.map(post =>
           post.id === postId ? { ...post, deleted: false } : post
         )
       );
@@ -136,10 +129,14 @@ const AuthorPostsPage: React.FC<AuthorPostsPageProps> = ({ authorId }) => {
                 {!post.deleted ? (
                   <>
                     <button onClick={() => handleEdit(post)}>Editar</button>
-                    <button onClick={() => handleDelete(post.id)}>Eliminar</button>
+                    <button onClick={() => handleDelete(post.id)}>
+                      Eliminar
+                    </button>
                   </>
                 ) : (
-                  <button onClick={() => handleRecover(post.id)}>Recuperar</button>
+                  <button onClick={() => handleRecover(post.id)}>
+                    Recuperar
+                  </button>
                 )}
               </>
             )}
@@ -153,5 +150,6 @@ const AuthorPostsPage: React.FC<AuthorPostsPageProps> = ({ authorId }) => {
 };
 
 export default AuthorPostsPage;
+
 
 

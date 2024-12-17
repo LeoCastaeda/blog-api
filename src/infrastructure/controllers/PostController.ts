@@ -87,6 +87,7 @@ export class PostController {
         res.status(401).json({ message: "Usuario no autenticado" });
         return;
       }
+      
 
       const dto = new PostActionDto(postId, Number(userId));
       await this.postService.deletePost(dto);
