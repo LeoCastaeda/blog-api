@@ -10,6 +10,7 @@ export interface IPostRepository {
   softDelete(id: number): Promise<void>;
   recover(id: number): Promise<void>;
   findAllWithDetails(): Promise<any[]>
+  deletePermanently(id: number): Promise<void>;
   
 
 

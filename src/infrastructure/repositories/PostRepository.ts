@@ -129,6 +129,11 @@ export class PostRepository implements IPostRepository {
       },
     });
   }
+  async deletePermanently(id: number): Promise<void> {
+    await prisma.post.delete({
+      where: { id },
+    });
+  }
 
  
   async findAllWithDetails(): Promise<any[]> {

@@ -22,10 +22,15 @@ const Login: React.FC = () => {
       });
 
       const { token, user } = response;
-      login(token, user); 
-      navigate("/"); 
+      login(token, user);
+      navigate("/");
     } catch (err: any) {
-      setError(err.message || "Error al iniciar sesión");
+      
+      if (err.message === "Tu cuenta ha sido baneada. Contacta con el administrador.") {
+        setError("⚠️ Tu cuenta está baneada. Contacta con el administrador.");
+      } else {
+        setError(err.message || "Error al iniciar sesión");
+      }
     }
   };
 

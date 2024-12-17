@@ -3,7 +3,10 @@ import { IPostRepository } from "../../domain/repositories/IPostRepository";
 import { PostActionDto } from "../dtos/postAction.dto";
 
 export class PostService {
-  constructor(private readonly postRepository: IPostRepository) {}
+  constructor(
+    private readonly postRepository: IPostRepository,
+    private readonly userService: any // Replace 'any' with the actual type of userService
+  ) {}
 
   async createPost(title: string, content: string, authorId: number): Promise<Post> {
     if (!title || !content || !authorId) {
@@ -28,6 +31,7 @@ export class PostService {
     return true;
   }
 
+
   async getUserPosts(authorId: number, includeDeleted: boolean = false): Promise<Post[]> {
     return this.postRepository.findUserPosts(authorId, includeDeleted);
   }
@@ -51,7 +55,15 @@ export class PostService {
 
     await this.postRepository.softDelete(dto.postId);
   }
-
+  async permanentlyDeletePost(postId: number): Promise<void> {
+    const post = await this.postRepository.findByIdIncludingDeleted(postId);
+  
+    if (!post) {
+      throw new Error("Post not found");
+    }
+  
+    await this.postRepository.deletePermanently(postId);
+  }
   async recoverPost(dto: PostActionDto): Promise<void> {
     PostActionDto.validate(dto);
 

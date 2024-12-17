@@ -132,7 +132,10 @@ Content-Type: application/json
 GET http://localhost:3000/api/posts/details
 Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MzgxLCJyb2xlIjoiYWRtaW4iLCJpYXQiOjE3MzM5MDcwNzIsImV4cCI6MTczMzkxMDY3Mn0.7_kqqfQLU8mydkppNwAL-oiKhsR-IcQi_MszXvihFZA
 Content-Type: application/json
-
+### Eliminar permanentemente un post por ID
+DELETE http://localhost:3000/api/posts/34/permanently
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6Niwicm9sZSI6ImFkbWluIiwiaWF0IjoxNzM0NDM2NDI1LCJleHAiOjE3MzQ0NDAwMjV9.bzIylY29m1MJApQkUs--SfDpDV5AiPzXh1nqGc7gy8w
+Content-Type: application/json
 
 
 

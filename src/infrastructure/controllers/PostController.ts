@@ -102,16 +102,25 @@ export class PostController {
   async getAuthorPosts(req: Request, res: Response): Promise<void> {
     try {
       const authorId = Number(req.params.authorId);
-      const includeDeleted = req.query.includeDeleted === "true"; 
-  
-      const posts = await this.postService.getUserPosts(authorId, includeDeleted);
-  
+      const posts = await this.postService.getUserPosts(authorId);
       res.status(200).json(posts);
-    } catch (error) {
+    } catch (error) { 
       res.status(500).json({
         error: error instanceof Error ? error.message : "Error al obtener los posts del autor",
       });
     }
+  } 
+
+  async permanentlyDeletePost(req: Request, res: Response): Promise<void> {
+    try {
+      const postId = Number(req.params.id);
+      await this.postService.permanentlyDeletePost(postId);
+      res.status(200).json({ message: "Post eliminado permanentemente" });
+    } catch (error) {
+      res.status(500).json({
+        message: error instanceof Error ? error.message : "Error al eliminar permanentemente el post",
+      });
+    } 
   }
 
   

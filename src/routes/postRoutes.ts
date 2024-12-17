@@ -8,7 +8,8 @@ import authorizationMiddleware from '../infrastructure/middlewares/authorizeMidd
 const postRouter = Router();
 
 const postRepository = new PostRepository();
-const postService = new PostService(postRepository);
+const userService = {};  
+const postService = new PostService(postRepository, userService);
 const postController = new PostController(postService);
 
 /**
@@ -235,6 +236,46 @@ postRouter.post('/:id/recover', authenticateJWT, authorizationMiddleware('recove
  *         description: Internal server error
  */
 postRouter.get('/:author/:authorId', authenticateJWT, authorizationMiddleware('read_post'), postController.getAuthorPosts.bind(postController));
+/**
+ * @swagger
+ * /api/posts/{id}/permanently:
+ *   delete:
+ *     summary: Eliminar permanentemente una publicación
+ *     tags:
+ *       - Posts
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: integer
+ *         description: ID de la publicación a eliminar permanentemente
+ *     responses:
+ *       200:
+ *         description: Publicación eliminada permanentemente
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: Publicación eliminada permanentemente
+ *       500:
+ *         description: Error interno del servidor
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 error:
+ *                   type: string
+ *                   example: Error interno del servidor
+ */
+
+postRouter.delete('/:id/permanently', authenticateJWT, authorizationMiddleware('delete'), postController.permanentlyDeletePost.bind(postController));
 
  
 

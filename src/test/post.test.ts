@@ -5,6 +5,7 @@ import { IPostRepository } from '../domain/repositories/IPostRepository';
 import { Post } from '../domain/entities/Post';
 import { Role } from '../domain/entities/Role';  
 import { PostActionDto } from '../application/dtos/postAction.dto';
+import { UserService } from '../application/services/userService';
 
 describe('PostController', () => {
   describe('createPost', () => {
@@ -17,7 +18,8 @@ describe('PostController', () => {
       const postRepository = {
         findById: jest.fn().mockResolvedValue(null),
       } as unknown as IPostRepository;  
-      postService = new PostService(postRepository);
+      const userService = {};  
+      postService = new PostService(postRepository, userService);
       postController = new PostController(postService);
       req = {
         body: {
@@ -219,7 +221,7 @@ describe('PostController', () => {
           const postRepository = {
             findById: jest.fn().mockResolvedValue(null),
           } as unknown as IPostRepository;  
-          postService = new PostService(postRepository);
+          postService = new PostService(postRepository, UserService);
           postController = new PostController(postService);
           req = {
             params: {
@@ -328,7 +330,7 @@ describe('PostController', () => {
       let res: Response;
       beforeEach(() => {
         const postRepository = {} as IPostRepository;  
-        postService = new PostService(postRepository);
+        postService = new PostService(postRepository, UserService);
         postController = new PostController(postService);
         req = {} as Request;
         res = {

@@ -62,7 +62,7 @@ export class User {
     return this.props.role;
   }
 
-  public get banned() {
+  public get banned(): boolean {
     return this.props.banned;
   }
 

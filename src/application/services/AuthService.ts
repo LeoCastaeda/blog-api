@@ -50,6 +50,10 @@ export class AuthService {
       throw new Error("Correo o contraseña incorrectos");
     }
 
+    if(user.banned){
+      throw new Error("El usuario se encuentra bloqueado");
+    }
+
      
     const isPasswordValid = await bcrypt.compare(password, user.password);
     if (!isPasswordValid) {
